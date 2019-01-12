@@ -13,8 +13,8 @@ bl_info = {
     "blender": (2, 79, 0),
     "location": "File > Import-Export",
     "warning": "This add-on is under development.",
-    #"wiki_url": "https://github.com/Syroot/io_scene_bfres/wiki",
-    #"tracker_url": "https://github.com/Syroot/io_scene_bfres/issues",
+    "wiki_url": "https://github.com/RenaKunisaki/bfres_importer/wiki",
+    "tracker_url": "https://github.com/RenaKunisaki/bfres_importer/issues",
     "support": 'COMMUNITY',
     "category": "Import-Export"
 }
