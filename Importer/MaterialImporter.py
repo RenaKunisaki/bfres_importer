@@ -57,6 +57,12 @@ class MaterialImporter:
             else:
                 print("FRES: Don't know what to do with texture:", name)
 
+            param = "uking_texture%d_texcoord" % i
+            param = fmat.materialParams.get(param, None)
+            if param:
+                mat.texture_slots[0].uv_layer = "_u"+param
+            else:
+                print("FRES: No texcoord attribute for texture %d" % i)
 
         return mat
 

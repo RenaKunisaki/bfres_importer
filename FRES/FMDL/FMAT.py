@@ -146,7 +146,7 @@ class FMAT(FresObject):
 
         # Dump mat param list
         res.append("Material Parameters:")
-        for name, val in self.mat_params.items():
+        for name, val in self.materialParams.items():
             res.append("  %-45s: %4s" % (name, val))
 
         # Dump tex/vtx attrs
@@ -324,14 +324,14 @@ class FMAT(FresObject):
 
         self.mat_param_dict = self._readDict(
             assign['mat_param_dict'], "mat_params")
-        self.mat_params = {}
+        self.materialParams = {}
         #log.debug("material params:")
         for i in range(assign['num_mat_params']):
             name = self.mat_param_dict.nodes[i+1].name
             offs = self.fres.read('Q', assign['mat_param_vals']+(i*8))
             val  = self.fres.readStr(offs)
             #log.debug("%-40s: %s", name, val)
-            if name in self.mat_params:
+            if name in self.materialParams:
                 print("FMAT: duplicate mat_param '%s'" % name)
             if name != '':
-                self.mat_params[name] = val
+                self.materialParams[name] = val
