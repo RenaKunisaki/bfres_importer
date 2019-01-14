@@ -26,6 +26,10 @@ class ImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
         description="Import textures from .Tex file with same name.",
         default=True)
 
+    dump_textures = bpy.props.BoolProperty(name="Dump Textures",
+        description="Export textures to PNG.",
+        default=False)
+
     smooth_faces = bpy.props.BoolProperty(name="Smooth Faces",
         description="Set smooth=True on generated faces.",
         default=False)
@@ -39,6 +43,7 @@ class ImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
         box = self.layout.box()
         box.label("Import Options:", icon='PREFERENCES')
         box.prop(self, "import_tex_file")
+        box.prop(self, "dump_textures")
         box.prop(self, "smooth_faces")
 
 

@@ -2,11 +2,14 @@ import bmesh
 import bpy
 import bpy_extras
 import struct
+import os
+import os.path
 
 class TextureImporter:
     """Imports texture images from BNTX archive."""
 
     def __init__(self, parent):
+        self.parent   = parent
         self.operator = parent.operator
         self.context  = parent.context
 
@@ -34,15 +37,21 @@ class TextureImporter:
                         a / 255.0,
                     )
                     offs += 4
+
             # flatten list
             pixels = [chan for px in pixels for chan in px]
             image.pixels = pixels
 
             # save to file
-            #image.filepath_raw = "/home/rena/projects/botw/tools/test-output/" + tex.name + ".png"
-            #image.file_format = 'PNG'
-            #print("Saving image to", image.filepath_raw)
-            #image.save()
+            if self.operator.dump_textures:
+                base, ext = os.path.splitext(self.parent.path)
+                dirPath = "%s/%s" % (base, bntx.name)
+                os.makedirs(dirPath, exist_ok=True)
+                image.filepath_raw = "%s/%s.png" % (
+                    dirPath, tex.name)
+                image.file_format = 'PNG'
+                print("Saving image to", image.filepath_raw)
+                image.save()
 
             image.pack(True, bytes(tex.pixels), len(tex.pixels))
             images[tex.name] = image

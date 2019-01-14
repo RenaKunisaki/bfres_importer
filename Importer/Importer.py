@@ -33,10 +33,11 @@ class Importer(ModelImporter):
         return group
 
 
-    def run(self, file):
+    def run(self, path):
         """Perform the import."""
-        self.wm = bpy.context.window_manager
-        return self.unpackFile(file)
+        self.wm   = bpy.context.window_manager
+        self.path = path
+        return self.unpackFile(path)
 
 
     def unpackFile(self, file):
@@ -52,6 +53,7 @@ class Importer(ModelImporter):
         """
         if type(file) is str: # a path
             file = BinaryFile(file)
+        self.file = file
 
         # read magic from header
         file.seek(0) # rewind
