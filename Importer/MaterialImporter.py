@@ -76,5 +76,8 @@ class MaterialImporter:
         # do we use the texid anymore?
         texid   = tex['name'].replace('.', '_') # XXX ensure unique
         texture = bpy.data.textures.new(texid, 'IMAGE')
-        texture.image = bpy.data.images[tex['name']]
+        try:
+            texture.image = bpy.data.images[tex['name']]
+        except KeyError:
+            print("FRES: Texture not found: '%s'" % tex['name'])
         return texture
