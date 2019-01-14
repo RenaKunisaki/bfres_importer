@@ -31,7 +31,7 @@ class ImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
 
     def draw(self, context):
         box = self.layout.box()
-        box.label("Import Options:", icon='OUTLINER_OB_MESH')
+        box.label("Import Options:", icon='PREFERENCES')
         box.prop(self, "import_tex_file")
 
 

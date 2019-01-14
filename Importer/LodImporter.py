@@ -44,7 +44,6 @@ class LodImporter:
 
         for submesh in self.lod.submeshes:
             idxs = submesh['idxs']
-            #log.debug("submesh idxs: %s", idxs)
             for idx in range(max(idxs)+1):
                 for attr in self.fvtx.attrs:
                     fmt  = attr.format
@@ -57,8 +56,6 @@ class LodImporter:
                     if func: data = func(data)
                     attrBuffers[attr.name].append(data)
 
-        #for name, buf in attrBuffers.items():
-        #    log.debug("%s: %s", name, buf)
         return attrBuffers
 
 
@@ -129,8 +126,6 @@ class LodImporter:
                     loop = mdata.loops[loopIdx]
                     uvloop = mdata.uv_layers.active.data[loopIdx]
                     x, y = data[loop.vertex_index]
-                    #print('meshloop: ', j, ' index: ',loopIdx, "vidx", loop.vertex_index, "coord", x, y)
-
                     uvloop.uv.x, uvloop.uv.y = x/vMax, y/vMax
             idx += 1
 

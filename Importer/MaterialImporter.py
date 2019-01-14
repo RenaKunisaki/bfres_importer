@@ -70,7 +70,7 @@ class MaterialImporter:
     def _importTexture(self, fmat, tex):
         """Import specified texture to specified material."""
         # do we use the texid anymore?
-        texid = tex['name'].replace('.', '_') # XXX ensure unique
+        texid   = tex['name'].replace('.', '_') # XXX ensure unique
         texture = bpy.data.textures.new(texid, 'IMAGE')
         texture.image = bpy.data.images[tex['name']]
         return texture
