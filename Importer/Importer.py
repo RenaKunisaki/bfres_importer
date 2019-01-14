@@ -103,6 +103,8 @@ class Importer(ModelImporter):
 
         if self.operator.save_decompressed: # write back to file
             path, ext = os.path.splitext(file.name)
+            # 's' prefix indicates compressed;
+            # eg '.sbfres' is compressed '.bfres'
             if ext.startswith('.s'): ext = '.'+ext[2:]
             else: ext = '.out'
             print("FRES: Saving decompressed file to:", path+ext)
