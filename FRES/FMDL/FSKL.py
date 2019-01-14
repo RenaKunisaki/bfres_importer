@@ -110,6 +110,10 @@ class FSKL(FresObject):
     def _readSmoothMtxs(self):
         """Read smooth matrices."""
         self.smooth_mtxs = []
+        if len(self.smooth_idxs) == 0:
+            print("FRES: no smooth idxs")
+            return
+
         for i in range(max(self.smooth_idxs)):
             # read the matrix
             mtx = self.fres.read('3f', count = 4,
