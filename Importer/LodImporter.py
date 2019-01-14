@@ -4,6 +4,7 @@ import bpy_extras
 import struct
 from .MaterialImporter import MaterialImporter
 from .SkeletonImporter import SkeletonImporter
+from io_scene_bfres.Exceptions import UnsupportedFormatError
 
 
 class LodImporter:
@@ -72,10 +73,8 @@ class LodImporter:
 
         # add the faces
         # XXX don't assume triangles
-        for i in range(0, len(idxs), 3):
-            vs   = list(mesh.verts[j] for j in idxs[i:i+3])
-            face = mesh.faces.new(vs)
-            face.smooth = self.parent.operator.smooth_faces
+        self._createFaces(idxs, mesh)
+
 
         # Write the bmesh data back to a new mesh.
         fshpMesh = bpy.data.meshes.new(self.lodName)
@@ -91,6 +90,28 @@ class LodImporter:
         mdata.materials.append(bpy.data.materials[mat.name])
 
         return meshObj
+
+
+    def _createFaces(self, idxs, mesh):
+        """Create the faces."""
+        fmt = self.lod.prim_fmt
+        meth = getattr(self, '_createFaces_'+fmt, None)
+        if meth is None:
+            print("FRES: Unsupported prim format:", fmt)
+            raise UnsupportedFormatError(
+                "Unsupported prim format: " + fmt)
+        return meth(idxs, mesh)
+
+    def _createFaces_triangles(self, idxs, mesh):
+        for i in range(0, len(idxs), 3):
+            vs   = list(mesh.verts[j] for j in idxs[i:i+3])
+            face = mesh.faces.new(vs)
+            face.smooth = self.parent.operator.smooth_faces
+
+    # XXX this seems wrong
+    _createFaces_line_strip = _createFaces_triangles
+    _createFaces_line_loop  = _createFaces_triangles
+
 
 
     def _addVerticesToMesh(self, mesh, vtxs):
