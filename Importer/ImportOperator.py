@@ -2,6 +2,7 @@ import bmesh
 import bpy
 import bpy_extras
 import os
+import os.path
 from .Importer import Importer
 
 
@@ -51,9 +52,10 @@ class ImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
         if self.import_tex_file:
             path, ext = os.path.splitext(self.properties.filepath)
             path = path + '.Tex' + ext
-            print("FRES: Importing linked file:", path)
-            importer = Importer(self, context)
-            importer.run(path)
+            if os.path.exists(path):
+                print("FRES: Importing linked file:", path)
+                importer = Importer(self, context)
+                importer.run(path)
         print("FRES: importing:", self.properties.filepath)
         importer = Importer(self, context)
         return importer.run(self.properties.filepath)
