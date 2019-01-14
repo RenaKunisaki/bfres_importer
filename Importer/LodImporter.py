@@ -75,7 +75,7 @@ class LodImporter:
         for i in range(0, len(idxs), 3):
             vs   = list(mesh.verts[j] for j in idxs[i:i+3])
             face = mesh.faces.new(vs)
-            #face.smooth = True
+            face.smooth = self.parent.operator.smooth_faces
 
         # Write the bmesh data back to a new mesh.
         fshpMesh = bpy.data.meshes.new(self.lodName)

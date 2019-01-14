@@ -25,7 +25,13 @@ class ImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
     import_tex_file = bpy.props.BoolProperty(name="Import .Tex File",
         description="Import textures from .Tex file with same name.",
         default=True)
+
+    smooth_faces = bpy.props.BoolProperty(name="Smooth Faces",
+        description="Set smooth=True on generated faces.",
+        default=False)
+
     parent_ob_name = bpy.props.StringProperty(name="Name of a parent object to which FSHP mesh objects will be added.")
+
     mat_name_prefix = bpy.props.StringProperty(name="Text prepended to material names to keep them unique.")
 
 
@@ -33,6 +39,7 @@ class ImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
         box = self.layout.box()
         box.label("Import Options:", icon='PREFERENCES')
         box.prop(self, "import_tex_file")
+        box.prop(self, "smooth_faces")
 
 
     def execute(self, context):
