@@ -35,6 +35,10 @@ class ImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
         description="Set smooth=True on generated faces.",
         default=False)
 
+    save_decompressed = bpy.props.BoolProperty(name="Save Decompressed Files",
+        description="Keep decompressed FRES files.",
+        default=False)
+
     parent_ob_name = bpy.props.StringProperty(name="Name of a parent object to which FSHP mesh objects will be added.")
 
     mat_name_prefix = bpy.props.StringProperty(name="Text prepended to material names to keep them unique.")
@@ -42,10 +46,17 @@ class ImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
 
     def draw(self, context):
         box = self.layout.box()
-        box.label("Import Options:", icon='PREFERENCES')
+        box.label("Texture Options:", icon='TEXTURE')
         box.prop(self, "import_tex_file")
         box.prop(self, "dump_textures")
+
+        box = self.layout.box()
+        box.label("Mesh Options:", icon='OUTLINER_OB_MESH')
         box.prop(self, "smooth_faces")
+
+        box = self.layout.box()
+        box.label("Misc Options:", icon='PREFERENCES')
+        box.prop(self, "save_decompressed")
 
 
     def execute(self, context):

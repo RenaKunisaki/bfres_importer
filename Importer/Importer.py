@@ -2,7 +2,9 @@ import bmesh
 import bpy
 import bpy_extras
 import os
+import os.path
 import tempfile
+import shutil
 import struct
 import math
 from io_scene_bfres.Exceptions import UnsupportedFileTypeError
@@ -97,8 +99,17 @@ class Importer(ModelImporter):
         for data in decoder.bytes():
             result.write(data)
         self.wm.progress_end()
-
         result.seek(0)
+
+        if self.operator.save_decompressed: # write back to file
+            path, ext = os.path.splitext(file.name)
+            if ext.startswith('.s'): ext = '.'+ext[2:]
+            else: ext = '.out'
+            print("FRES: Saving decompressed file to:", path+ext)
+            with open(path+ext, 'wb') as save:
+                shutil.copyfileobj(result, save)
+            result.seek(0)
+
         return BinaryFile(result)
 
 
