@@ -159,7 +159,7 @@ class LodImporter:
             try: data = self.attrBuffers[attr]
             except KeyError: break
 
-            vMax  = self.fvtx.attrsByName[attr].format['max']
+            vMax  = self.fvtx.attrsByName[attr].format.get('max', 1)
             mdata = self.meshObj.data
             mdata.uv_textures.new(attr)
             for i, poly in enumerate(mdata.polygons):
