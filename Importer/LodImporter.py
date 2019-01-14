@@ -102,16 +102,36 @@ class LodImporter:
                 "Unsupported prim format: " + fmt)
         return meth(idxs, mesh)
 
-    def _createFaces_triangles(self, idxs, mesh):
-        for i in range(0, len(idxs), 3):
-            vs   = list(mesh.verts[j] for j in idxs[i:i+3])
+    def _createFacesBasic(self, idxs, mesh, step, nVtxs):
+        for i in range(0, len(idxs), step):
+            vs   = list(mesh.verts[j] for j in idxs[i:i+nVtxs])
             face = mesh.faces.new(vs)
             face.smooth = self.parent.operator.smooth_faces
+
+    def _createFaces_points(self, idxs, mesh):
+        return self._createFacesBasic(idxs, mesh, 1, 1)
+
+    def _createFaces_lines(self, idxs, mesh):
+        return self._createFacesBasic(idxs, mesh, 2, 2)
+
+    #def _createFaces_line_strip(self, idxs, mesh):
+    #    return self._createFacesBasic(idxs, mesh, 1, 2)
+
+    #def _createFaces_line_loop(self, idxs, mesh):
+    #    return self._createFacesBasic(idxs, mesh, 1, 2)
+
+    def _createFaces_triangles(self, idxs, mesh):
+        return self._createFacesBasic(idxs, mesh, 3, 3)
+
+    def _createFaces_triangle_strip(self, idxs, mesh):
+        return self._createFacesBasic(idxs, mesh, 1, 3)
+
+    def _createFaces_quads(self, idxs, mesh):
+        return self._createFacesBasic(idxs, mesh, 4, 4)
 
     # XXX this seems wrong
     _createFaces_line_strip = _createFaces_triangles
     _createFaces_line_loop  = _createFaces_triangles
-
 
 
     def _addVerticesToMesh(self, mesh, vtxs):
