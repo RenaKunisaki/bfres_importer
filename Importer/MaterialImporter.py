@@ -54,15 +54,19 @@ class MaterialImporter:
                 mtex.use_map_color_emission = True
                 mtex.use_map_alpha          = True
 
+            # also seen: `_Blur_%02d` (in Animal_Bee)
+
             else:
-                print("FRES: Don't know what to do with texture:", name)
+                print("FRES:     Don't know what to do with texture:", name)
 
             param = "uking_texture%d_texcoord" % i
             param = fmat.materialParams.get(param, None)
             if param:
                 mat.texture_slots[0].uv_layer = "_u"+param
+                print("FRES:     Using UV layer %s for texture %s" % (
+                    param, name))
             else:
-                print("FRES: No texcoord attribute for texture %d" % i)
+                print("FRES:     No texcoord attribute for texture %d" % i)
 
         return mat
 

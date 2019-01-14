@@ -12,6 +12,7 @@ Very much in development and may be full of bugs and rough corners.
 - Importing models, with their skeletons and textures, from `.bfres` and `.sbfres` files (at least `Animal_Fox` works)
     - Includes cases where textures are in a separate `.Tex.sbfres` file in the same directory
     - Textures are embedded in the `.blend` file
+    - Each LOD (level of detail) model is imported as a separate object, which might look strange when all of them are visible.
 
 # What's broken:
 - Specular intensity is way too high
@@ -19,6 +20,7 @@ Very much in development and may be full of bugs and rough corners.
 - `npc_zelda_miko` is weird, needs investigation
 - Decompressing is slow
 - No way to turn off the generation of dump files
+- `Animal_Bee`'s UV map is all wrong
 
 # What's not even started yet:
 - Animations
