@@ -41,7 +41,7 @@ attrFmts = {
     0x1201: {
         'fmt':   '2H',
         'ctype': 'int',
-        'name':  'u16',
+        'name':  'u16[2]',
     },
     0x1501: {
         'fmt':   '2h',
