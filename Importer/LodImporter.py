@@ -57,6 +57,10 @@ class LodImporter:
                     if func: data = func(data)
                     attrBuffers[attr.name].append(data)
 
+        #for name, data in attrBuffers.items():
+        #    print("%s: %s" % (
+        #        name, ' '.join(map(str, data[0:16]))
+        #    ))
         return attrBuffers
 
 
@@ -67,14 +71,10 @@ class LodImporter:
         # but we can usually rely on this.
         nVtxs = int(self.lod.header['idx_cnt'] / 3)
 
-        # create a mesh
+        # create a mesh and add faces to it
         mesh = bmesh.new()
         self._addVerticesToMesh(mesh, p0)
-
-        # add the faces
-        # XXX don't assume triangles
         self._createFaces(idxs, mesh)
-
 
         # Write the bmesh data back to a new mesh.
         fshpMesh = bpy.data.meshes.new(self.lodName)
