@@ -8,6 +8,8 @@ from .Dict import Dict
 from .EmbeddedFile import EmbeddedFile, Header as EmbeddedFileHeader
 from .FMDL import FMDL, Header as FMDLHeader
 from .DumpMixin import DumpMixin
+import traceback
+import struct
 
 # XXX WiiU header
 
@@ -96,6 +98,8 @@ class FRES(DumpMixin):
         self.size    = self.header['file_size']
         self.version = self.header['version']
 
+        #self._readLogFile = open('./%s.map.csv' % self.name, 'w')
+
         if self.version != (3, 5):
             print("FRES: Unknown version 0x%04X 0x%04X" %
                 self.version)
@@ -149,6 +153,45 @@ class FRES(DumpMixin):
         return objs
 
 
+    def _logRead(self, size, pos, count, rel):
+        """Log reads to file for debug."""
+        typ = '-'
+        if type(size) is str:
+            typ  = size
+            size = struct.calcsize(size)
+        elif type(size) is not int:
+            typ  = type(size).__name__
+            size = size.size
+        size *= count
+        file, line, func = '?', 0, '?'
+
+        stack = traceback.extract_stack()
+        for frame in reversed(stack):
+            file, line, func = frame.filename, frame.lineno, frame.name
+            file = file.split('/')
+            if file[-1] == '__init__.py': file = file[0:-1]
+            for i, p in enumerate(file):
+                if p == 'io_scene_bfres':
+                    file = file[i+1:]
+                    break
+            file = '/'.join(file)
+
+            ok = True
+            if func in ('<lambda>', 'read', '_logRead', 'readStr', 'readHex', 'readHexWords', 'decode'):
+                ok = False
+            if file in (
+                'Importer/Importer.py',
+                'Importer/ImportOperator.py',
+                'BinaryStruct',
+                'BinaryStruct/BinaryObject.py',):
+                ok = False
+            if ok: break
+
+        s = "%06X,%06X,%s,%d,%s,%s,%s\n" % (
+            pos, size, file, line, func, typ, rel)
+        self._readLogFile.write(s)
+
+
     def read(self, size:(int,str,BinaryStruct),
     pos:int=None, count:int=1,
     rel:bool=False):
@@ -163,6 +206,7 @@ class FRES(DumpMixin):
         """
         if pos is None: pos = self.file.tell()
         if rel: pos += self.rlt.dataStart
+        #self._logRead(size, pos, count, rel)
         return self.file.read(pos=pos, fmt=size, count=count)
 
 
