@@ -70,7 +70,7 @@ class Header(BinaryStruct):
         ('H',    'shader_param_data_size'),
         ('H',    'raw_param_data_size'),
         ('H',    'user_data_cnt'),
-        Padding(2),
+        ('H',    'unkB2'), # usually 0 or 1
         ('I',    'unkB4'),
     )
     size = 0xB8
