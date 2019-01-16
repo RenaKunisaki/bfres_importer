@@ -26,6 +26,8 @@ types = { # name => id, bytes per pixel
     'BC3':       {'id':0x1C, 'bpp':16},
     'BC4':       {'id':0x1D, 'bpp': 8},
     'BC5':       {'id':0x1E, 'bpp':16},
+    'BC6':       {'id':0x1F, 'bpp': 8}, # XXX verify bpp
+    'BC7':       {'id':0x20, 'bpp': 8}, # XXX verify bpp
     'ASTC4x4':   {'id':0x2D, 'bpp':16},
     'ASTC5x4':   {'id':0x2E, 'bpp':16},
     'ASTC5x5':   {'id':0x2F, 'bpp':16},
