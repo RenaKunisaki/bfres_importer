@@ -18,8 +18,9 @@ class TextureImporter:
         """Import textures from BNTX."""
         images = {}
         for i, tex in enumerate(bntx.textures):
-            print("FRES: Importing texture %3d/%3d '%s'..." % (
-                i+1, len(bntx.textures), tex.name))
+            print("FRES: Importing texture %3d/%3d '%s' (%s)..." % (
+                i+1, len(bntx.textures), tex.name,
+                type(tex.fmt_type).__name__))
 
             image = bpy.data.images.new(tex.name,
                 width=tex.width, height=tex.height)

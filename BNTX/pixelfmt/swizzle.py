@@ -50,5 +50,5 @@ class BlockLinearSwizzle(Swizzle):
             (((y & 0x07) >> 1) << 6) +
             (((x & 0x1F) >> 4) << 5) +
             ( (y & 0x01)       << 4) +
-            (x & 0x0F)
+            (  x & 0x0F)
         )

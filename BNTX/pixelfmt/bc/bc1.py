@@ -16,7 +16,8 @@ class BC1(TextureFormat, BCn):
         pixels  = bytearray(width * height * 64)
         swizzle = tex.swizzle.getOffset
 
-        print("FRES: BC1: %d bytes/pixel, %dx%d = %d, len = %d" % (
+        print("FRES: BC1: %s, %d bytes/pixel, %dx%d = %d, len = %d" % (
+            tex.name,
             bpp, width, height, width * height * bpp,
             len(data)))
 

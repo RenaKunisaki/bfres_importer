@@ -7,3 +7,31 @@ fox u0: (51, 104) (6, 234) (127, 213) (208, 132) (130, 60) (247, 21) (51, 104) (
 
 Link:     5557 vtxs,  7104 faces,   7104 tris
 Renamon:  5493 vtxs,  8357 faces,  10524 tris
+
+Fox textures
+Property        | Fox_Alb.0  | Fox_Eye_Alb | Differences
+----------------|------------|-------------|------------
+Length          | 0x0002E8   | 0x0002D8    | *
+Length 2        | 0x0002E8   | 0x0002D8    | *
+Flags           | 0x01       | 0x01        |
+Dimensions      | 0x02       | 0x02        |
+Tile Mode       | 0x0000     | 0x0000      |
+Swiz Size       | 0x0000     | 0x0000      |
+Mipmap Cnt      | 0x0009     | 0x0007      | *
+Multisample Cnt | 0x0001     | 0x0001      |
+Reserved 1A     | 0x0000     | 0x0000      |
+Fmt Data Type   | 6 SRGB     | 6 SRGB      |
+Fmt Type        | 26 BC1     | 26 BC1      |
+Access Flags    | 0x00000020 | 0x00000020  |
+Width x Height  | 256/  256  |  64/   64   | *
+Depth           | 1          | 1           |
+Array Cnt       | 1          | 1           |
+Block Height    | 8          | 2           | *
+Unk38           | 0007 0001  | 0007 0001   |
+Unk3C           | 0,0,0,0,0  | 0,0,0,0,0   |
+Data Len        | 0x0000B400 | 0x00001400  | *
+Alignment       | 0x00000200 | 0x00000200  |
+Channel Types   | RGBA       | RGBA        |
+Texture Type    | 0x00000001 | 0x00000001  |
+Parent Offs     | 0x00000020 | 0x00000020  |
+Ptrs Offs       | 0x00000578 | 0x00000E30  | *

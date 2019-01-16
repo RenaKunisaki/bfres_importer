@@ -60,9 +60,10 @@ class BCn:
         a0, a1 = alpha[0], alpha[1]
         d = (a0, a1, 0, 0, 0, 0, 0, 0xFF)
         alpha = bytearray(bytes(d))
-        for i in range(2, 6):
+        for i in range(2, 8 if a0 > a1 else 6):
             if a0 > a1:
-                alpha[i] = int(((8-i) * a0 + (i-1) * a1) / 7)
+                b = int(((8-i) * a0 + (i-1) * a1) / 7)
             else:
-                alpha[i] = int(((6-i) * a0 + (i-1) * a1) / 7)
+                b = int(((6-i) * a0 + (i-1) * a1) / 7)
+            alpha[i] = min(255, max(0, b))
         return alpha
