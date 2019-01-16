@@ -57,13 +57,18 @@ class BCn:
 
     def calcAlpha(self, alpha):
         # used by BC3, BC4, BC5
+        # a0, a1 are color endpoints
+        # the palette consists of (a0, a1, 6 more colors)
+        # those 6 colors are a gradient from a0 to a1
+        # if a1 > a0 then the gradient is only 4 colors long
+        # and the last 2 are 0x00, 0xFF.
+        # XXX this function name is bad, not really doing anything
+        # relating to alpha here...
         a0, a1 = alpha[0], alpha[1]
-        d = (a0, a1, 0, 0, 0, 0, 0, 0xFF)
-        alpha = bytearray(bytes(d))
-        for i in range(2, 8 if a0 > a1 else 6):
-            if a0 > a1:
-                b = int(((8-i) * a0 + (i-1) * a1) / 7)
-            else:
-                b = int(((6-i) * a0 + (i-1) * a1) / 7)
+        d      = (a0, a1, 0, 0, 0, 0, 0, 0xFF)
+        alpha  = bytearray(bytes(d))
+        nCols  = 8 if a0 > a1 else 6
+        for i in range(2, nCols):
+            b = int(((nCols-i) * a0 + (i-1) * a1) / 7)
             alpha[i] = min(255, max(0, b))
         return alpha

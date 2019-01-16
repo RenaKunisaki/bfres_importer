@@ -20,6 +20,7 @@ class BC4(TextureFormat, BCn):
             for x in range(width):
                 offs  = swizzle(x, y)
                 red   = self.calcAlpha(data[offs : offs+2])
+                # read two extra bytes here, but we won't use them
                 redCh = struct.unpack('Q', data[offs+2 : offs+10])[0]
 
                 toffs = 0
