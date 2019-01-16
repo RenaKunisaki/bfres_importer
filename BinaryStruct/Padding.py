@@ -15,9 +15,10 @@ class Padding(BinaryObject):
         """Read this object from a file."""
         if offset is None: offset = file.tell()
         data = super().readFromFile(file, offset)
-        for i, byte in enumerate(data):
-            if byte != self.value:
-                print("Padding byte at 0x%X is 0x%02X, should be 0x%02X" % (
-                    offset+i, byte, self.value
-                ))
+        self.data = data
+        #for i, byte in enumerate(data):
+        #    if byte != self.value:
+        #        print("Padding byte at 0x%X is 0x%02X, should be 0x%02X" % (
+        #            offset+i, byte, self.value
+        #        ))
         return data

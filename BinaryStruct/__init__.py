@@ -94,6 +94,7 @@ class BinaryStruct:
                     field['name'], offset, ex))
 
         self._checkMagic(res)
+        self._checkPadding(res)
         return res
 
 
@@ -113,6 +114,23 @@ class BinaryStruct:
         if magic not in valid:
             raise ValueError("%s: invalid magic %s; expected %s" % (
                 type(self).__name__, str(magic), str(valid)))
+
+
+    def _checkPadding(self, res):
+        """Check if padding values are as expected."""
+        from .Padding import Padding
+        for field in self.orderedFields:
+            typ  = field['type']
+            name = field['name']
+            data = res[name]
+            if isinstance(typ, Padding):
+                expected = typ.value
+                for i, byte in enumerate(data):
+                    if byte != expected:
+                        print("%s: Padding byte at 0x%X is 0x%02X, should be 0x%02X" % (
+                            type(self).__name__,
+                            field['offset']+i, byte, expected
+                        ))
 
 
     def dump(self, data:dict) -> str:
