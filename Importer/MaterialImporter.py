@@ -40,28 +40,28 @@ class MaterialImporter:
             mtex.emission_color_factor = 0.5
             #mtex.use_map_density       = True
             mtex.mapping               = 'FLAT'
+            mtex.use_map_color_diffuse = False
 
             if name.endswith('_Nrm'): # normal map
-                mtex.use_map_color_diffuse  = False
-                mtex.use_map_normal         = True
+                mtex.use_map_normal = True
 
             elif name.endswith('_Spm'): # specular map
-                mtex.use_map_color_diffuse  = False
-                mtex.use_map_specular       = True
+                mtex.use_map_specular = True
 
             elif name.endswith('_Alb'): # albedo (regular texture)
                 mtex.use_map_color_diffuse  = True
                 mtex.use_map_color_emission = True
                 mtex.use_map_alpha          = True
 
+            elif name.endswith('_AO'): # ambient occlusion
+                mtex.use_map_ambient = True
+
             # also seen:
             # `_Blur_%02d` (in Animal_Bee)
-            # `_AO` (in Link)
             # `_Damage_Alb`, `_Red_Alb` (in Link)
 
             else:
                 print("FRES:     Don't know what to do with texture:", name)
-                mtex.use_map_color_diffuse = False
 
             param = "uking_texture%d_texcoord" % i
             param = fmat.materialParams.get(param, None)
