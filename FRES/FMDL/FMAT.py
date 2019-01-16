@@ -112,9 +112,9 @@ class FMAT(FresObject):
         # Dump render params
         res.append("Render params:")
         res.append("  \x1B[4mParam                           "+
-            "│Type │Cnt│Value\x1B[0m")
+            "│Type    │Cnt│Value\x1B[0m")
         for name, param in self.renderParams.items():
-            res.append("  %-32s│%-5s│%3d│%s" % (
+            res.append("  %-32s│%-8s│%3d│%s" % (
                 name, param['type'], param['count'], param['vals']))
 
         # Dump shader params
@@ -193,7 +193,7 @@ class FMAT(FresObject):
     def _readRenderParams(self):
         """Read the render params list."""
         self.renderParams = {}
-        types = ('?', 'float', 'str')
+        types = ('float[2]', 'float', 'str')
         base  = self.header['render_param_offs']
 
         for i in range(self.header['render_param_cnt']):
@@ -214,8 +214,8 @@ class FMAT(FresObject):
                 'vals':  [],
             }
             for j in range(cnt):
-                if   typ == 0: val=self.fres.readHex(8, offs)
-                elif typ == 1: val=self.fres.read('f', offs)
+                if   typ == 0: val=self.fres.read('2f', offs)
+                elif typ == 1: val=self.fres.read('f',  offs)
                 elif typ == 2:
                     offs = self.fres.read('Q', offs)
                     val  = self.fres.readStr(offs)
