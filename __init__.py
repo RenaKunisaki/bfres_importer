@@ -19,7 +19,6 @@ bl_info = {
     "category": "Import-Export"
 }
 
-
 # Reload the package modules when reloading add-ons in Blender with F8.
 print("BFRES MAIN")
 if "bpy" in locals():
@@ -30,33 +29,36 @@ if "bpy" in locals():
         if name in ls:
             importlib.reload(ls[name])
 
-
+# fix up import path (why is this necessary?)
 import sys
-try:
-    import bpy
-    from io_scene_bfres.Importer import ImportOperator
-except ModuleNotFoundError: # not running under Blender
-    sys.path.append('..') # fix import names
+import os.path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from io_scene_bfres import Importer, YAZ0, FRES, BinaryStruct
-from io_scene_bfres.BinaryFile import BinaryFile
+# import our modules
+import bpy
+from bfres import Importer, YAZ0, FRES, BinaryStruct
+from bfres.Importer import ImportOperator
+from bfres.BinaryFile import BinaryFile
 import tempfile
 
 
+# define Blender functions
 def register():
     print("BFRES REGISTER")
-    bpy.utils.register_module(__name__)
+    bpy.utils.register_module('bfres')
     bpy.types.INFO_MT_file_import.append(
         ImportOperator.menu_func_import)
 
 
 def unregister():
     print("BFRES UNREGISTER")
-    bpy.utils.unregister_module(__name__)
+    bpy.utils.unregister_module('bfres')
     bpy.types.INFO_MT_file_import.remove(
         ImportOperator.menu_func_import)
 
 
+# define main function, for running script outside of Blender.
+# this currently doesn't work.
 def main():
     if len(sys.argv) < 2:
         print("Usage: %s file" % sys.argv[0])
