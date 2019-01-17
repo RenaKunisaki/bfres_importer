@@ -16,15 +16,16 @@ Very much in development and may be full of bugs and rough corners.
 
 # What's broken:
 - Specular intensity is way too high
-- BC1 decoding is broken (bad swizzle calculation?)
 - `npc_zelda_miko` is weird, needs investigation
 - Decompressing is slow
+    - Progress indicator sucks, but I don't think Blender provides any way to do a better one
 - No way to turn off the generation of dump files
 - `Animal_Bee`'s UV map is all wrong
 
 # What's not even started yet:
 - Animations
 - Exporting
+- WiiU files
 
 # Why another importer?
 I wanted to convert to a common format such as Collada, which any 3D editor could then use, but Blender seems to have issues with every suitable format. ¯\\\_(ツ)\_/¯
