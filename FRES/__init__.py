@@ -4,6 +4,8 @@ from io_scene_bfres.BinaryStruct.Switch import Offset32, Offset64, String
 from io_scene_bfres.BinaryFile import BinaryFile
 from .RLT import RLT
 from io_scene_bfres.Common import StringTable
+from io_scene_bfres.Exceptions import \
+    UnsupportedFormatError, UnsupportedFileTypeError
 from .Dict import Dict
 from .EmbeddedFile import EmbeddedFile, Header as EmbeddedFileHeader
 from .FMDL import FMDL, Header as FMDLHeader
@@ -89,11 +91,21 @@ class FRES(DumpMixin):
         self.buffers    = [] # buffer data
         self.embeds     = [] # embedded files
 
-        Header = SwitchHeader()
-        self.header = Header.readFromFile(file)
-        #print("FRES header:\n" + Header.dump(self.header))
+        # read magic and determine file type
+        pos   = file.tell()
+        magic = file.read('8s')
+        file.seek(pos) # return to previous position
+        if magic == b'FRES    ':
+            Header = SwitchHeader()
+            self.header = Header.readFromFile(file)
+        elif magic[0:4] == b'FRES':
+            raise UnsupportedFormatError(
+                "Sorry, WiiU files aren't supported yet")
+        else:
+            raise UnsupportedFileTypeError(magic)
 
         # extract some header info.
+        #print("FRES header:\n" + Header.dump(self.header))
         self.name    = self.header['name']
         self.size    = self.header['file_size']
         self.version = self.header['version']
