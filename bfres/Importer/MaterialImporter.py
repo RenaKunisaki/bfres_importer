@@ -19,6 +19,7 @@ class MaterialImporter:
         mat.use_transparency = True
         mat.alpha = 1
         mat.specular_alpha = 1
+        self._addCustomProperties(fmat, mat)
 
         for i, tex in enumerate(fmat.textures):
             print("FRES:     Importing Texture %3d / %3d '%s'..." % (
@@ -85,3 +86,29 @@ class MaterialImporter:
         except KeyError:
             print("FRES: Texture not found: '%s'" % tex['name'])
         return texture
+
+
+    def _addCustomProperties(self, fmat, mat):
+        """Add render/shader/material parameters and sampler list
+        as custom properties on the Blender material object.
+        """
+        for name, param in fmat.renderParams.items():
+            val = param['vals']
+            if param['count'] == 1: val = val[0]
+            mat['renderParam_'+name] = val
+
+        for name, param in fmat.shaderParams.items():
+            mat['shaderParam_'+name] = {
+                'type':   param['type']['name'],
+                'size':   param['size'],
+                'offset': param['offset'],
+                'idxs':   param['idxs'],
+                'unk00':  param['unk00'],
+                'unk14':  param['unk14'],
+                'data':   param['data'],
+            }
+
+        for name, val in fmat.materialParams.items():
+            mat['matParam_'+name] = val
+
+        mat['samplers'] = fmat.samplers

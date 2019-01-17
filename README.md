@@ -15,12 +15,13 @@ Very much in development and may be full of bugs and rough corners.
     - Each LOD (level of detail) model is imported as a separate object, which might look strange when all of them are visible.
 
 # What's broken:
-- Specular intensity is way too high
+- Specular intensity is way too high (models are shinier than they should be)
 - `npc_zelda_miko` is weird, needs investigation
 - Decompressing is slow
     - Progress indicator sucks, but I don't think Blender provides any way to do a better one
 - No way to turn off the generation of dump files
 - `Animal_Bee`'s UV map is all wrong
+- Importing fails if not in object mode
 
 # What's not even started yet:
 - Animations
