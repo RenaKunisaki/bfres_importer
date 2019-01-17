@@ -13,6 +13,7 @@ Very much in development and may be full of bugs and rough corners.
     - Includes cases where textures are in a separate `.Tex.sbfres` file in the same directory
     - Textures are embedded in the `.blend` file
     - Each LOD (level of detail) model is imported as a separate object, which might look strange when all of them are visible.
+    - Materials' render/shader/material parameters are stored as Blender custom properties on the material objects.
 
 # What's broken:
 - Specular intensity is way too high (models are shinier than they should be)

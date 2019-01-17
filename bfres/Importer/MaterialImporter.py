@@ -15,10 +15,10 @@ class MaterialImporter:
     def importMaterial(self, fmat):
         """Import specified material."""
         mat = bpy.data.materials.new(fmat.name)
-        mat.specular_intensity = 0  # Do not make materials without specular map shine exaggeratedly.
         mat.use_transparency = True
         mat.alpha = 1
         mat.specular_alpha = 1
+        mat.specular_intensity = 0  # Do not make materials without specular map shine exaggeratedly.
         self._addCustomProperties(fmat, mat)
 
         for i, tex in enumerate(fmat.textures):
@@ -111,4 +111,8 @@ class MaterialImporter:
         for name, val in fmat.materialParams.items():
             mat['matParam_'+name] = val
 
-        mat['samplers'] = fmat.samplers
+        mat['samplers']    = fmat.samplers
+        mat['mat_flags']   = fmat.header['mat_flags']
+        mat['section_idx'] = fmat.header['section_idx']
+        mat['unkB2']       = fmat.header['unkB2']
+        mat['unkB4']       = fmat.header['unkB4']
