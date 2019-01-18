@@ -122,9 +122,10 @@ class Importer(ModelImporter):
         self.fres = FRES.FRES(file)
         self.fres.decode()
 
-        with open('./fres-%s-dump.txt' % self.fres.name, 'w') as f:
-            f.write(self.fres.dump())
-        #print("FRES contents:\n" + self.fres.dump())
+        if self.operator.dump_debug:
+            with open('./fres-%s-dump.txt' % self.fres.name, 'w') as f:
+                f.write(self.fres.dump())
+            #print("FRES contents:\n" + self.fres.dump())
 
         # decode embedded files
         for file in self.fres.embeds:
@@ -156,8 +157,9 @@ class Importer(ModelImporter):
         """Import BNTX file."""
         self.bntx = BNTX.BNTX(file)
         self.bntx.decode()
-        with open('./fres-%s-bntx-dump.txt' % self.bntx.name, 'w') as f:
-            f.write(self.bntx.dump())
+        if self.operator.dump_debug:
+            with open('./fres-%s-bntx-dump.txt' % self.bntx.name, 'w') as f:
+                f.write(self.bntx.dump())
 
         imp = TextureImporter(self)
         imp.importTextures(self.bntx)
