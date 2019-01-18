@@ -38,6 +38,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import bpy
 from bfres import Importer, YAZ0, FRES, BinaryStruct
 from bfres.Importer import ImportOperator
+from bfres.Importer.Preferences import BfresPreferences
 from bfres.BinaryFile import BinaryFile
 import tempfile
 

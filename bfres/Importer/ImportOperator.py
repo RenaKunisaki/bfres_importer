@@ -60,6 +60,10 @@ class ImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
 
 
     def execute(self, context):
+        user_preferences = context.user_preferences
+        addon_prefs = user_preferences.addons[self.bl_idname].preferences
+        print("PREFS:", user_preferences, addon_prefs)
+
         if self.import_tex_file:
             path, ext = os.path.splitext(self.properties.filepath)
             path = path + '.Tex' + ext
