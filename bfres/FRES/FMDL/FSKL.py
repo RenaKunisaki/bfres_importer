@@ -61,6 +61,17 @@ class FSKL(FresObject):
         )
 
 
+    def _dumpBone(self, idx):
+        """Recursively dump bone structure."""
+        res  = []
+        bone = self.bones[idx]
+        res.append("%3d: %s" % (bone.bone_idx, bone.name))
+        for b in self.bones:
+            if b.parent_idx == idx:
+                res.append(self._dumpBone(b.bone_idx))
+        return '\n'.join(res).replace('\n', '\n  ')
+
+
     def dump(self):
         """Dump to string for debug."""
         res  = []
@@ -84,6 +95,8 @@ class FSKL(FresObject):
         res.append("Unk44:  0x%08X" % self.header['unk44'])
         for bone in self.bones:
             res.append(bone.dump())
+        res.append("Bone structure:")
+        res.append(self._dumpBone(0))
         return '\n'.join(res).replace('\n', '\n  ')
 
 
