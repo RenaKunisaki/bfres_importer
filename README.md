@@ -22,7 +22,6 @@ Very much in development and may be full of bugs and rough corners.
 - Decompressing is slow
     - Progress indicator sucks, but I don't think Blender provides any way to do a better one
 - `Animal_Bee`'s UV map is all wrong
-- Importing fails if not in object mode
 - The addon preferences don't show up and I have no idea why
 
 # What's not even started yet:
