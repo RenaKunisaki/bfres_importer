@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 import bmesh
 import bpy
 import bpy_extras
@@ -81,7 +82,7 @@ class Importer(ModelImporter):
 
         Returns a temporary file.
         """
-        print("FRES: Decompressing input file...")
+        log.debug("Decompressing input file...")
         result = tempfile.TemporaryFile()
 
         # make progress callback to update UI
@@ -109,7 +110,7 @@ class Importer(ModelImporter):
             # eg '.sbfres' is compressed '.bfres'
             if ext.startswith('.s'): ext = '.'+ext[2:]
             else: ext = '.out'
-            print("FRES: Saving decompressed file to:", path+ext)
+            log.info("Saving decompressed file to: %s", path+ext)
             with open(path+ext, 'wb') as save:
                 shutil.copyfileobj(result, save)
             result.seek(0)
@@ -133,8 +134,8 @@ class Importer(ModelImporter):
 
         # import the models.
         for i, model in enumerate(self.fres.models):
-            print("FRES: Importing model    %3d / %3d..." % (
-                i+1, len(self.fres.models)))
+            log.info("Importing model    %3d / %3d...",
+                i+1, len(self.fres.models))
             self._importModel(model)
 
         return {'FINISHED'}
@@ -149,8 +150,8 @@ class Importer(ModelImporter):
             try:
                 self.unpackFile(file.toTempFile())
             except UnsupportedFileTypeError as ex:
-                print("FRES: Embedded file '%s' is of unsupported type '%s'" % (
-                    file.name, ex.magic))
+                log.debug("Embedded file '%s' is of unsupported type '%s'",
+                    file.name, ex.magic)
 
 
     def _importBntx(self, file):

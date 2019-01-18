@@ -1,4 +1,5 @@
 # Switch common formats
+import logging; log = logging.getLogger(__name__)
 from .. import BinaryStruct, BinaryObject
 from ..Offset import Offset
 from ..StringOffset import StringOffset

@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 import struct
 from ..base import TextureFormat
 
@@ -21,8 +22,8 @@ class BCn:
         try:
             c0, c1, idxs = struct.unpack_from('HHI', data, offs)
         except:
-            print("FRES: BC: Failed to unpack tile data from offset 0x%X: %s" % (
-                offs, data[offs:offs+8]))
+            log.error("BC: Failed to unpack tile data from offset 0x%X: %s",
+                offs, data[offs:offs+8])
             raise
         clut.append(unpackRGB565(c0))
         clut.append(unpackRGB565(c1))

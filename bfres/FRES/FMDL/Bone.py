@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from bfres.BinaryStruct import BinaryStruct, BinaryObject
 from bfres.BinaryStruct.Padding import Padding
 from bfres.BinaryStruct.StringOffset import StringOffset
@@ -118,7 +119,7 @@ class Bone(FresObject):
     def readFromFRES(self, offset=None):
         """Read this object from given file."""
         if offset is None: offset = self.fres.file.tell()
-        #print("Reading Bone from 0x%06X" % offset)
+        #log.debug("Reading Bone from 0x%06X", offset)
         self.offset = offset
         data = self.fres.read(BoneStruct(), offset)
 
@@ -158,7 +159,7 @@ class Bone(FresObject):
                 S[1] *= 1 / self.parent.scale[1]
                 S[2] *= 1 / self.parent.scale[2]
             else:
-                print("FRES: Bone '%s' has flag SEG_SCALE_COMPENSATE but no parent" % self.name)
+                log.warning("Bone '%s' has flag SEG_SCALE_COMPENSATE but no parent", self.name)
         # no idea what "scale uniformly" actually means.
         # XXX billboarding, rigid mtxs, if ever used.
 
@@ -182,7 +183,7 @@ class Bone(FresObject):
         M = M * T
         M = M * P
 
-        #print("Final bone transform", self.name, M)
+        #log.debug("Final bone transform %s: %s", self.name, M)
         return M
 
 

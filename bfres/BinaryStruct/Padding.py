@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from .BinaryObject import BinaryObject
 from bfres.BinaryFile import BinaryFile
 import struct

@@ -1,3 +1,5 @@
+import logging; log = logging.getLogger(__name__)
+
 class DumpMixin:
     """Mixin class for dump methods of FRES."""
     def dump(self):

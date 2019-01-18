@@ -1,3 +1,5 @@
+import logging; log = logging.getLogger(__name__)
+
 def unpack10bit(val):
     if type(val) in (list, tuple):
         val = val[0] # grumble grumble struct is butts

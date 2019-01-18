@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from .Decoder import Decoder
 
 def decompressFile(infile, outfile):

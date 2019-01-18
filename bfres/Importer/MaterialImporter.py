@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 import bmesh
 import bpy
 import bpy_extras
@@ -22,8 +23,8 @@ class MaterialImporter:
         self._addCustomProperties(fmat, mat)
 
         for i, tex in enumerate(fmat.textures):
-            print("FRES:     Importing Texture %3d / %3d '%s'..." % (
-                i+1, len(fmat.textures), tex['name']))
+            log.info("Importing Texture %3d / %3d '%s'...",
+                i+1, len(fmat.textures), tex['name'])
             texObj = self._importTexture(fmat, tex)
 
             # Add texture slot
@@ -62,16 +63,16 @@ class MaterialImporter:
             # `_Damage_Alb`, `_Red_Alb` (in Link)
 
             else:
-                print("FRES:     Don't know what to do with texture:", name)
+                log.warning("Don't know what to do with texture: %s", name)
 
             param = "uking_texture%d_texcoord" % i
             param = fmat.materialParams.get(param, None)
             if param:
                 mat.texture_slots[0].uv_layer = "_u"+param
-                #print("FRES:     Using UV layer %s for texture %s" % (
-                #    param, name))
+                #log.debug("Using UV layer %s for texture %s",
+                #    param, name)
             else:
-                print("FRES:     No texcoord attribute for texture %d" % i)
+                log.warning("No texcoord attribute for texture %d", i)
 
         return mat
 
@@ -84,7 +85,7 @@ class MaterialImporter:
         try:
             texture.image = bpy.data.images[tex['name']]
         except KeyError:
-            print("FRES: Texture not found: '%s'" % tex['name'])
+            log.error("Texture not found: '%s'", tex['name'])
         return texture
 
 

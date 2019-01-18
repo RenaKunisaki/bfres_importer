@@ -12,6 +12,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with botwtools.  If not, see <https://www.gnu.org/licenses/>.
+import logging; log = logging.getLogger(__name__)
 import struct
 from .base import TextureFormat
 

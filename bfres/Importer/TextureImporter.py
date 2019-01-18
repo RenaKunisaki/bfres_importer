@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 import bmesh
 import bpy
 import bpy_extras
@@ -18,9 +19,9 @@ class TextureImporter:
         """Import textures from BNTX."""
         images = {}
         for i, tex in enumerate(bntx.textures):
-            print("FRES: Importing texture %3d/%3d '%s' (%s)..." % (
+            log.info("Importing texture %3d/%3d '%s' (%s)...",
                 i+1, len(bntx.textures), tex.name,
-                type(tex.fmt_type).__name__))
+                type(tex.fmt_type).__name__)
 
             image = bpy.data.images.new(tex.name,
                 width=tex.width, height=tex.height)
@@ -51,7 +52,7 @@ class TextureImporter:
                 image.filepath_raw = "%s/%s.png" % (
                     dirPath, tex.name)
                 image.file_format = 'PNG'
-                print("Saving image to", image.filepath_raw)
+                log.info("Saving image to %s", image.filepath_raw)
                 image.save()
 
             image.pack(True, bytes(tex.pixels), len(tex.pixels))

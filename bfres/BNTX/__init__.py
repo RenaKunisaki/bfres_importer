@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from bfres.BinaryStruct import BinaryStruct, BinaryObject
 from bfres.BinaryStruct.Padding import Padding
 from bfres.BinaryStruct.StringOffset import StringOffset
@@ -46,11 +47,11 @@ class BNTX:
                 self.header['byte_order'])
 
         if self.header['version'] != 0x400C:
-            print("FRES: Unknown BNTX version 0x%04X" %
+            log.warning("Unknown BNTX version 0x%04X",
                 self.header['version'])
 
-        #print("FRES: BNTX version 0x%04X, %s endian" % (
-        #    self.header['version'], self.byteOrder))
+        #log.debug("BNTX version 0x%04X, %s endian",
+        #    self.header['version'], self.byteOrder)
 
 
     def dump(self):

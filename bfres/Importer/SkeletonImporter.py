@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 import bmesh
 import bpy
 import bpy_extras
@@ -57,8 +58,6 @@ class SkeletonImporter:
                 boneObj.use_connect = False
             else:
                 boneObj.head = (0,0,0)
-
-            #print("Imported bone", boneObj, boneObj.parent)
 
         bpy.ops.object.mode_set(mode='OBJECT')
         return armObj

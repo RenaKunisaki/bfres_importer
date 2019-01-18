@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from .Offset import Offset
 from .BinaryObject import BinaryObject
 from bfres.BinaryFile import BinaryFile
@@ -51,8 +52,8 @@ class StringOffset(Offset):
         try:
             if self.encoding is not None: s = s.decode(self.encoding)
         except UnicodeDecodeError:
-            print("FRES: Can't decode string from 0x%X as '%s': %s" % (
-                offset, self.encoding, s[0:15]))
+            log.error("Can't decode string from 0x%X as '%s': %s",
+                offset, self.encoding, s[0:15])
             raise
 
         return s

@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 import struct
 from .base import BCn, TextureFormat, unpackRGB565, clamp
 
@@ -16,10 +17,10 @@ class BC1(TextureFormat, BCn):
         pixels  = bytearray(width * height * 64)
         swizzle = tex.swizzle.getOffset
 
-        #print("FRES: BC1: %s, %d bytes/pixel, %dx%d = %d, len = %d" % (
+        #log.debug("BC1: %s, %d bytes/pixel, %dx%d = %d, len = %d",
         #    tex.name,
         #    bpp, width, height, width * height * bpp,
-        #    len(data)))
+        #    len(data))
 
         for y in range(height):
             for x in range(width):

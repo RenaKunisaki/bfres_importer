@@ -34,6 +34,11 @@ import sys
 import os.path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# set up debug log
+import bfres.logger
+bfres.logger.setup('bfres')
+log = bfres.logger.logging.getLogger()
+
 # import our modules
 import bpy
 from bfres import Importer, YAZ0, FRES, BinaryStruct
@@ -45,14 +50,14 @@ import tempfile
 
 # define Blender functions
 def register():
-    print("BFRES REGISTER")
+    log.debug("BFRES REGISTER")
     bpy.utils.register_module('bfres')
     bpy.types.INFO_MT_file_import.append(
         ImportOperator.menu_func_import)
 
 
 def unregister():
-    print("BFRES UNREGISTER")
+    log.debug("BFRES UNREGISTER")
     bpy.utils.unregister_module('bfres')
     bpy.types.INFO_MT_file_import.remove(
         ImportOperator.menu_func_import)

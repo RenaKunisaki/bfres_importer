@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 import bmesh
 import bpy
 import bpy_extras
@@ -97,7 +98,7 @@ class LodImporter:
         fmt = self.lod.prim_fmt
         meth = getattr(self, '_createFaces_'+fmt, None)
         if meth is None:
-            print("FRES: Unsupported prim format:", fmt)
+            log.error("Unsupported prim format: %s", fmt)
             raise UnsupportedFormatError(
                 "Unsupported prim format: " + fmt)
         return meth(idxs, mesh)
@@ -145,7 +146,7 @@ class LodImporter:
             if w != 1:
                 # Blender doesn't support the W coord,
                 # but it's never used anyway.
-                print("FRES: FSHP vertex W is", w)
+                log.warn("FRES: FSHP vertex W is %f", w)
             mesh.verts.new((x, -z, y))
         mesh.verts.ensure_lookup_table()
         mesh.verts.index_update()
@@ -176,7 +177,7 @@ class LodImporter:
         try:
             self._makeVertexGroup()
         except KeyError:
-            print("FRES: mesh '%s' has no weights" % self.lodName)
+            log.info("mesh '%s' has no weights", self.lodName)
 
 
     def _addArmature(self):
@@ -196,7 +197,8 @@ class LodImporter:
             w0 = self.attrBuffers['_w0']
             i0 = self.attrBuffers['_i0']
         except KeyError:
-            print("FRES: mesh '%s' has no weights" % self.meshObj.name)
+            log.info("FRES: mesh '%s' has no weights",
+                self.meshObj.name)
             return
 
         # create a vertex group for each bone
@@ -216,5 +218,5 @@ class LodImporter:
                     try:
                         groups[idx[j]].add([i], w/255.0, 'REPLACE')
                     except (KeyError, IndexError):
-                        print("FRES: Bone group %d doesn't exist (referenced by weight of vtx %d, value %d)" % (
-                            idx[j], i, w))
+                        log.warning("Bone group %d doesn't exist (referenced by weight of vtx %d, value %d)",
+                            idx[j], i, w)

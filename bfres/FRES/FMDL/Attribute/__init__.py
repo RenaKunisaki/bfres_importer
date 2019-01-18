@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from bfres.BinaryStruct import BinaryStruct
 from bfres.BinaryStruct.Padding import Padding
 from bfres.BinaryStruct.Switch import String
@@ -34,7 +35,7 @@ class Attribute(FresObject):
         self.buf_idx  = data['buf_idx']
         self.format   = attrFmts.get(self.formatID, None)
         if self.format is None:
-            print("FMDL Attribute: Unknown format 0x%04X" %
+            log.warning("FMDL Attribute: Unknown format 0x%04X",
                 self.formatID)
         return self
 

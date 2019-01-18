@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from .base import TextureFormat, fmts, types
 from . import rgb, bc
 

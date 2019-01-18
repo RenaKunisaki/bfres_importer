@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 import bmesh
 import bpy
 import bpy_extras
@@ -69,15 +70,18 @@ class ImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
         #addon_prefs = user_preferences.addons[self.bl_idname].preferences
         #print("PREFS:", user_preferences, addon_prefs)
 
-        bpy.ops.object.mode_set(mode='OBJECT')
+        # enter Object mode if not already
+        try: bpy.ops.object.mode_set(mode='OBJECT')
+        except RuntimeError: pass
+
         if self.import_tex_file:
             path, ext = os.path.splitext(self.properties.filepath)
             path = path + '.Tex' + ext
             if os.path.exists(path):
-                print("FRES: Importing linked file:", path)
+                log.info("Importing linked file: %s", path)
                 importer = Importer(self, context)
                 importer.run(path)
-        print("FRES: importing:", self.properties.filepath)
+        log.info("importing: %s", self.properties.filepath)
         importer = Importer(self, context)
         return importer.run(self.properties.filepath)
 

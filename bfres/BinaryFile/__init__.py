@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 import struct
 from bfres.BinaryStruct import BinaryStruct, BinaryObject
 
@@ -53,8 +54,8 @@ class BinaryFile:
         try:
             return self.file.seek(pos, whence)
         except:
-            print("Error seeking to 0x%X from %s" % (
-                pos, str(whence)))
+            log.error("Error seeking to 0x%X from %s",
+                pos, str(whence))
             raise
 
 
@@ -76,7 +77,7 @@ class BinaryFile:
         elif count == 0: return []
 
         res = []
-        #print("BinaryFile read fmt:", fmt, "offset", hex(pos))
+        #log.debug("BinaryFile read fmt: %s, offset: %s", fmt, pos)
 
         try:
             if issubclass(fmt, BinaryObject):
@@ -93,8 +94,8 @@ class BinaryFile:
                 try:
                     r = struct.unpack(fmt, self.file.read(size))
                 except struct.error as ex:
-                    print("FRES: Failed to unpack format '%s' from offset 0x%X (max 0x%X): %s" % (
-                        fmt, offs, self.size, ex))
+                    log.error("Failed to unpack format '%s' from offset 0x%X (max 0x%X): %s",
+                        fmt, offs, self.size, ex)
                     raise
                 if len(r) == 1: r = r[0] # grumble
                 res.append(r)

@@ -12,6 +12,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with botwtools.  If not, see <https://www.gnu.org/licenses/>.
+import logging; log = logging.getLogger(__name__)
 import struct
 
 types = { # name => id, bytes per pixel
@@ -56,7 +57,7 @@ class TextureFormat:
         try:
             return fmts[id]
         except KeyError:
-            print("FRES: Unsupported texture format 0x%02X" % id)
+            log.error("Unsupported texture format 0x%02X", id)
             raise TypeError("Unsupported texure format")
 
 
@@ -65,9 +66,9 @@ class TextureFormat:
         decode = self.decodePixel
         bpp    = self.bytesPerPixel
         data   = tex.data
-        print("FRES: Texture: %d bytes/pixel, %dx%d = %d, len = %d" % (
+        log.debug("Texture: %d bytes/pixel, %dx%d = %d, len = %d",
             bpp, tex.width, tex.height, tex.width * tex.height * bpp,
-            len(data)))
+            len(data))
         for i in range(0, len(data), bpp):
             px = data[i : i+bpp]
             pixels.append(decode(px))

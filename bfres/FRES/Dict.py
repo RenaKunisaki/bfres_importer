@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from bfres.BinaryStruct import BinaryStruct, BinaryObject
 from bfres.BinaryStruct.Padding import Padding
 from bfres.BinaryStruct.StringOffset import StringOffset
@@ -66,21 +67,21 @@ class Dict(FresObject):
         """Read this object from the FRES."""
         self.header = Header().readFromFile(self.fres.file, offset)
 
-        #print("Dict @ 0x%06X: unk00=0x%08X num_items=%d" % (
+        #log.debug("Dict @ 0x%06X: unk00=0x%08X num_items=%d",
         #    offset,
         #    self.header['unk00'],
         #    self.header['num_items'],
-        #))
+        #)
         offset += Header.size
 
         # read nodes (+1 for root node)
         for i in range(self.header['num_items'] + 1):
             node = Node().readFromFile(self.fres.file, offset)
             self.nodes.append(node)
-            #print('Node %3d: S=0x%08X I=0x%04X,0x%04X D=0x%06X "%s"' %(
+            #log.debug('Node %3d: S=0x%08X I=0x%04X,0x%04X D=0x%06X "%s"',
             #    i, node.search_value, node.left_idx,
             #    node.right_idx, node.data_offset, node.name,
-            #))
+            #)
             offset += Node.size
 
         # build tree

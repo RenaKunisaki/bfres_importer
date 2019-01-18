@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 import struct
 #from BinaryFile import BinaryFile
 from .BinaryObject import BinaryObject
@@ -90,8 +91,8 @@ class BinaryStruct:
                 res[field['name']] = data
                 offset += field['size']
             except Exception as ex:
-                print("FRES: Failed reading field '%s' from offset 0x%X: %s" % (
-                    field['name'], offset, ex))
+                log.error("Failed reading field '%s' from offset 0x%X: %s",
+                    field['name'], offset, ex)
 
         self._checkMagic(res)
         self._checkPadding(res)
@@ -127,10 +128,10 @@ class BinaryStruct:
                 expected = typ.value
                 for i, byte in enumerate(data):
                     if byte != expected:
-                        print("%s: Padding byte at 0x%X is 0x%02X, should be 0x%02X" % (
+                        log.debug("%s: Padding byte at 0x%X is 0x%02X, should be 0x%02X",
                             type(self).__name__,
                             field['offset']+i, byte, expected
-                        ))
+                        )
 
 
     def dump(self, data:dict) -> str:

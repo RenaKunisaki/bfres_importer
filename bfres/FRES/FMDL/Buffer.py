@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from bfres.BinaryStruct import BinaryStruct, BinaryObject
 from bfres.BinaryStruct.Padding import Padding
 from bfres.BinaryStruct.StringOffset import StringOffset
@@ -15,8 +16,8 @@ class Buffer:
         self.offset = offset
         self.data   = file.read(size, offset)
         if len(self.data) < size:
-            print("Buffer size is 0x%X but only read 0x%X" % (
-                size, len(self.data)))
+            log.warning("Buffer size is 0x%X but only read 0x%X",
+                size, len(self.data))
 
         fmts = {
               'int8': 'b',

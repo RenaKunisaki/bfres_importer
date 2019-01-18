@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from bfres.BinaryStruct import BinaryStruct, BinaryObject
 from bfres.BinaryStruct.Padding import Padding
 from bfres.BinaryStruct.StringOffset import StringOffset
@@ -27,7 +28,7 @@ class StringTable:
     def readFromFile(self, file, offset=None):
         """Read this object from the given file."""
 
-        #print("Read str table from 0x%X" % offset)
+        #log.debug("Read str table from 0x%X", offset)
         header = self.Header()
         self.header = header.readFromFile(file, offset)
         offset += header.size
@@ -39,8 +40,8 @@ class StringTable:
             try:
                 data = data.decode('shift-jis')
             except UnicodeDecodeError:
-                print("FRES: Can't decode string from 0x%X as 'shift-jis': %s" %
-                    (offset, data[0:16]))
+                log.error("Can't decode string from 0x%X as 'shift-jis': %s",
+                    offset, data[0:16])
                 raise
             self.strings[offset] = data
             #print('StrTab[%06X]: "%s"' % (offset, data))

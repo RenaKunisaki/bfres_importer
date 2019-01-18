@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from bfres.BinaryStruct import BinaryStruct, BinaryObject
 from bfres.BinaryStruct.Padding import Padding
 from bfres.BinaryStruct.StringOffset import StringOffset
@@ -159,7 +160,7 @@ class FMAT(FresObject):
     def readFromFRES(self, offset=None):
         """Read this object from given file."""
         if offset is None: offset = self.fres.file.tell()
-        print("Reading FMAT from 0x%06X" % offset)
+        log.debug("Reading FMAT from 0x%06X", offset)
         self.headerOffset = offset
         self.header = self.fres.read(Header(), offset)
         self.name   = self.header['name']
@@ -202,8 +203,8 @@ class FMAT(FresObject):
             name = self.fres.readStr(name)
 
             if pad != 0:
-                print("FRES: FMAT Render info '%s' padding=0x%X" % (
-                    name, pad))
+                log.warning("FRES: FMAT Render info '%s' padding=0x%X",
+                    name, pad)
             try: typeName = types[typ]
             except IndexError: typeName = '0x%X' % typ
 
@@ -220,8 +221,8 @@ class FMAT(FresObject):
                     offs = self.fres.read('Q', offs)
                     val  = self.fres.readStr(offs)
                 else:
-                    print("FRES: FMAT Render param '%s' unknown type 0x%X" % (
-                        name, typ))
+                    log.warning("FMAT Render param '%s' unknown type 0x%X",
+                        name, typ)
                     val = '<unknown>'
                 param['vals'].append(val)
 
@@ -229,7 +230,7 @@ class FMAT(FresObject):
             #    typeName, cnt, name, ', '.join(map(str, param['vals'])))
 
             if name in self.renderParams:
-                print("FRES: FMAT Duplicate render param '%s'" % name)
+                log.warning("FMAT: Duplicate render param '%s'", name)
             self.renderParams[name] = param
 
 
@@ -249,12 +250,12 @@ class FMAT(FresObject):
             name = self.fres.readStr(name)
             type = shaderParamTypes[type]
             if unk0:
-                print("FRES: Shader param '%s' unk0=0x%X" % (name, unk0))
+                log.debug("Shader param '%s' unk0=0x%X", name, unk0)
             if unk14 != -1:
-                print("FRES: Shader param '%s' unk14=%d" % (name, unk14))
+                log.debug("Shader param '%s' unk14=%d", name, unk14)
             if idx0 != i or idx1 != i:
-                print("Shader param '%s' idxs=%d, %d (expected %d)" % (
-                    name, idx0, idx1, i))
+                log.debug("Shader param '%s' idxs=%d, %d (expected %d)",
+                    name, idx0, idx1, i)
 
             data = self.fres.read(size, data_offs + offset)
             data = struct.unpack(type['fmt'], data)
@@ -263,7 +264,7 @@ class FMAT(FresObject):
             #    type['outfmt'] % data)
 
             if name in self.shaderParams:
-                print("FRES: Duplicate shader param '%s'" % name)
+                log.warning("Duplicate shader param '%s'", name)
 
             self.shaderParams[name] = {
                 'name':   name,
@@ -332,6 +333,6 @@ class FMAT(FresObject):
             val  = self.fres.readStr(offs)
             #log.debug("%-40s: %s", name, val)
             if name in self.materialParams:
-                print("FMAT: duplicate mat_param '%s'" % name)
+                log.warning("FMAT: duplicate mat_param '%s'", name)
             if name != '':
                 self.materialParams[name] = val

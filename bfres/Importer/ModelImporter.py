@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 import bmesh
 import bpy
 import bpy_extras
@@ -27,14 +28,14 @@ class ModelImporter:
         # import the materials.
         self.matImp = MaterialImporter(self, fmdl)
         for i, fmat in enumerate(fmdl.fmats):
-            print("FRES:   Importing material %3d / %3d..." % (
-                i+1, len(fmdl.fmats)))
+            log.info("Importing material %3d / %3d...",
+                i+1, len(fmdl.fmats))
             self.matImp.importMaterial(fmat)
 
         # create the shapes.
         for i, fshp in enumerate(fmdl.fshps):
-            print("FRES:   Importing shape %3d / %3d '%s'..." % (
-                i+1, len(fmdl.fshps), fshp.name))
+            log.info("Importing shape %3d / %3d '%s'...",
+                i+1, len(fmdl.fshps), fshp.name)
             self._importShape(fmdl, fshp, fmdl_obj)
 
 
@@ -47,8 +48,8 @@ class ModelImporter:
         """
         fvtx = fmdl.fvtxs[fshp.header['fvtx_idx']]
         for ilod, lod in enumerate(fshp.lods):
-            print("FRES:     Importing LOD %3d / %3d..." % (
-                ilod+1, len(fshp.lods)))
+            log.info("Importing LOD %3d / %3d...",
+                ilod+1, len(fshp.lods))
 
             lodImp  = LodImporter(self)
             meshObj = lodImp._importLod(fvtx, fmdl, fshp, lod, ilod)

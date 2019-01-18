@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from bfres.BinaryStruct import BinaryStruct, BinaryObject
 from bfres.BinaryStruct.StringOffset import StringOffset
 from bfres.BinaryStruct.Switch import Offset32, Offset64, String
@@ -105,7 +106,7 @@ class FRES(DumpMixin):
             raise UnsupportedFileTypeError(magic)
 
         # extract some header info.
-        #print("FRES header:\n" + Header.dump(self.header))
+        #log.debug("FRES header:\n%s", Header.dump(self.header))
         self.name    = self.header['name']
         self.size    = self.header['file_size']
         self.version = self.header['version']
@@ -113,8 +114,8 @@ class FRES(DumpMixin):
         #self._readLogFile = open('./%s.map.csv' % self.name, 'w')
 
         if self.version != (3, 5):
-            print("FRES: Unknown version 0x%04X 0x%04X" %
-                self.version)
+            log.warning("Unknown FRES version 0x%04X 0x%04X",
+                self.version[0], self.version[1])
 
         if self.header['byte_order'] == 0xFFFE:
             self.byteOrder = 'little'
@@ -130,7 +131,7 @@ class FRES(DumpMixin):
     def decode(self):
         """Decode objects from the file."""
         self.rlt = RLT(self).readFromFRES()
-        #print("RLT data_start = 0x%08X" % self.rlt.dataStart)
+        log.debug("RLT data_start = 0x%08X", self.rlt.dataStart)
 
         # str_tab_offset points to the first actual string, not
         # the header. (maybe it's actually the offset of some string,
@@ -152,13 +153,13 @@ class FRES(DumpMixin):
         cnt  = self.header[name + '_cnt']
         dofs = self.header[name + '_dict_offset']
         objs = []
-        print("FRES: Reading dict '%s' from 0x%X" % (name, dofs))
+        log.debug("Reading dict '%s' from 0x%X", name, dofs)
         if dofs == 0: return objs
         objDict = Dict(self).readFromFRES(dofs)
         for i in range(cnt):
             objName = objDict.root.left.name
-            print('FRES: Reading %s #%2d @ %06X: "%s"' % (
-                typ.__name__, i, offs, objName))
+            log.debug('Reading %s #%2d @ %06X: "%s"',
+                typ.__name__, i, offs, objName)
             obj = typ(self, objName).readFromFRES(offs)
             objs.append(obj)
             offs += size

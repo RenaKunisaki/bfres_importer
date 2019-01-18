@@ -1,3 +1,5 @@
+import logging; log = logging.getLogger(__name__)
+
 class FresObject:
     """Base class for an object in an FRES."""
 

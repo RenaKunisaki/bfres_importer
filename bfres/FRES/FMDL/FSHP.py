@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from bfres.BinaryStruct import BinaryStruct, BinaryObject
 from bfres.BinaryStruct.Padding import Padding
 from bfres.BinaryStruct.StringOffset import StringOffset
@@ -88,7 +89,7 @@ class FSHP(FresObject):
     def readFromFRES(self, offset=None):
         """Read this object from given file."""
         if offset is None: offset = self.fres.file.tell()
-        print("Reading FSHP from 0x%06X" % offset)
+        log.debug("Reading FSHP from 0x%06X", offset)
         self.headerOffset = offset
         self.header = self.fres.read(Header(), offset)
         self.name   = self.header['name']

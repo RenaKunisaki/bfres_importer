@@ -1,3 +1,4 @@
+import logging; log = logging.getLogger(__name__)
 from bfres.BinaryStruct import BinaryStruct, BinaryObject
 from bfres.BinaryStruct.Padding import Padding
 from bfres.BinaryStruct.StringOffset import StringOffset
@@ -89,7 +90,7 @@ class FSKL(FresObject):
     def readFromFRES(self, offset=None):
         """Read this object from given file."""
         if offset is None: offset = self.fres.file.tell()
-        print("Reading FSKL from 0x%06X" % offset)
+        log.debug("Reading FSKL from 0x%06X", offset)
         self.headerOffset = offset
         self.header = self.fres.read(Header(), offset)
 
@@ -111,7 +112,7 @@ class FSKL(FresObject):
         """Read smooth matrices."""
         self.smooth_mtxs = []
         if len(self.smooth_idxs) == 0:
-            print("FRES: no smooth idxs")
+            log.info("no smooth idxs")
             return
 
         for i in range(max(self.smooth_idxs)):
@@ -124,8 +125,8 @@ class FSKL(FresObject):
                 for x in range(3):
                     n = mtx[y][x]
                     if math.isnan(n) or math.isinf(n):
-                        print("FRES: Skeleton smooth mtx %d element [%d,%d] is %s" % (
-                            i, x, y, n))
+                        log.warning("Skeleton smooth mtx %d element [%d,%d] is %s",
+                            i, x, y, n)
 
             # replace all invalid values with zeros
             flt = lambda e: \
@@ -147,7 +148,7 @@ class FSKL(FresObject):
             b = Bone(self.fres).readFromFRES(offs)
             self.bones.append(b)
             if b.name in self.bonesByName:
-                print("FRES: Duplicate bone name '%s'" % b.name)
+                log.warning("Duplicate bone name '%s'", b.name)
                 self.bonesByName[b.name] = b
             offs += Bone._struct.size
 
@@ -155,8 +156,8 @@ class FSKL(FresObject):
         for bone in self.bones:
             bone.fskl = self
             if bone.parent_idx >= len(self.bones):
-                print("FRES: Bone %s has invalid parent_idx %d (max is %d)" % (
-                    bone.name, bone.parent_idx, len(self.bones)))
+                log.warning("Bone %s has invalid parent_idx %d (max is %d)",
+                    bone.name, bone.parent_idx, len(self.bones))
                 bone.parent = None
             elif bone.parent_idx >= 0:
                 bone.parent = self.bones[bone.parent_idx]

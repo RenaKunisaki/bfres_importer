@@ -1,3 +1,5 @@
+import logging; log = logging.getLogger(__name__)
+
 class TexCoord2f:
     def __init__(self, u=0, v=0):
         self.u = u
