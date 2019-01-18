@@ -125,12 +125,8 @@ class Importer(ModelImporter):
         #print("FRES contents:\n" + self.fres.dump())
 
         # decode embedded files
-        for i, file in enumerate(self.fres.embeds):
-            try:
-                self.unpackFile(file.toTempFile())
-            except UnsupportedFileTypeError as ex:
-                print("FRES: Embedded file '%s' is of unsupported type '%s'" % (
-                    file.name, ex.magic))
+        for file in self.fres.embeds:
+            self._importFresEmbed(file)
 
         # import the models.
         for i, model in enumerate(self.fres.models):
@@ -139,6 +135,19 @@ class Importer(ModelImporter):
             self._importModel(model)
 
         return {'FINISHED'}
+
+
+    def _importFresEmbed(self, file):
+        """Import embedded file from FRES."""
+        if file.name.endswith('.txt'): # embed into blend file
+            obj = bpy.data.texts.new(file.name)
+            obj.write(file.data.decode('utf-8'))
+        else: # try to decode, may be BNTX
+            try:
+                self.unpackFile(file.toTempFile())
+            except UnsupportedFileTypeError as ex:
+                print("FRES: Embedded file '%s' is of unsupported type '%s'" % (
+                    file.name, ex.magic))
 
 
     def _importBntx(self, file):
