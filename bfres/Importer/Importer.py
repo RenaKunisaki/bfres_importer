@@ -92,6 +92,7 @@ class Importer(ModelImporter):
             if pct - progress >= 1:
                 self.wm.progress_update(pct)
                 progress = pct
+            print("\rDecompressing... %3d%%" % pct, end='')
         self.wm.progress_begin(0, 100)
 
         # decompress the file
@@ -99,6 +100,7 @@ class Importer(ModelImporter):
         for data in decoder.bytes():
             result.write(data)
         self.wm.progress_end()
+        print("") # end status line
         result.seek(0)
 
         if self.operator.save_decompressed: # write back to file
