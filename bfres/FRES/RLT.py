@@ -13,6 +13,10 @@ from .FresObject import FresObject
 # 2. Pointers for vertex buffer.
 # 3. Pointers for memory pool.
 # 4. Pointers for external files.
+# Relocation table is used to quickly load files; rather than
+# actually parsing them, the whole file is loaded into memory,
+# and this table is used to locate the structs. So the pointers
+# must be correct, but mostly aren't needed to parse the file.
 
 class Header(BinaryStruct):
     """RLT header."""
