@@ -10,7 +10,7 @@ from .FresObject import FresObject
 class Header(BinaryStruct):
     """Dict header."""
     fields = (
-        ('I',  'unk00'), # "magic, always blank in FRES"
+        ('4s', 'magic'), # "_DIC" or 0
         ('I',  'num_items'), # excluding root
     )
     size = 8
@@ -50,8 +50,8 @@ class Dict(FresObject):
     def dump(self):
         """Dump to string for debug."""
         res  = [
-            "  Dict, %3d items, unk00 = 0x%X" % (
-                len(self.nodes), self.header['unk00'],
+            "  Dict, %3d items, magic = %s" % (
+                len(self.nodes), self.header['magic'],
             ),
             "\x1B[4mNode│Search  │Left│Rght│DataOffs│Name\x1B[0m",
         ]
