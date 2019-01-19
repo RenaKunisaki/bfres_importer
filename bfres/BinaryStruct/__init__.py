@@ -98,7 +98,7 @@ class BinaryStruct:
                 log.error("Failed reading field '%s' from offset 0x%X: %s",
                     field['name'], offset, ex)
 
-        log.debug("Read %s: %s", type(self).__name__, res)
+        #log.debug("Read %s: %s", type(self).__name__, res)
         self._checkMagic(res)
         self._checkOffsets(res, file)
         self._checkPadding(res)

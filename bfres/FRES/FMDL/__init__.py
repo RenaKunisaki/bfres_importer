@@ -19,23 +19,20 @@ class Header(BinaryStruct):
     # followed by 4 zero bytes.
     magic  = b'FMDL'
     fields = (
-        ('4s', 'magic'),
-        ('I',  'size'),
-        ('I',  'size2'),
-        Padding(4),
-        String('name'),
-        Padding(4),
+        ('4s',   'magic'),
+        ('I',    'size'),
+        Offset64('block_offset'), # always == size?
+        String(  'name', fmt='Q'),
         Offset64('str_tab_end'),
-        Offset64('fskl_offset'),
 
+        Offset64('fskl_offset'),
         Offset64('fvtx_offset'),
         Offset64('fshp_offset'),
         Offset64('fshp_dict_offset'),
         Offset64('fmat_offset'),
         Offset64('fmat_dict_offset'),
         Offset64('udata_offset'),
-        Offset64('unk60'),
-        Offset64('unk68'), # probably dict for unk60
+        Padding(16),
 
         ('H',  'fvtx_count'),
         ('H',  'fshp_count'),
