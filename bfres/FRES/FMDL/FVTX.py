@@ -125,7 +125,8 @@ class FVTX(FresObject):
 
     def _readBuffers(self):
         """Read the attribute data buffers."""
-        dataOffs = self.fres.rlt.dataStart + self.header['vtx_buf_offs']
+        dataOffs = self.header['vtx_buf_offs'] + \
+            self.fres.rlt.sections[1]['curOffset']
         bufSize    = self.header['vtx_bufsize_offs']
         strideSize = self.header['vtx_stridesize_offs']
 

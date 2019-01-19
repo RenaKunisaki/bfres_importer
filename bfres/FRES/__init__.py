@@ -131,7 +131,6 @@ class FRES(DumpMixin):
     def decode(self):
         """Decode objects from the file."""
         self.rlt = RLT(self).readFromFRES()
-        log.debug("RLT data_start = 0x%08X", self.rlt.dataStart)
 
         # str_tab_offset points to the first actual string, not
         # the header. (maybe it's actually the offset of some string,
@@ -218,7 +217,7 @@ class FRES(DumpMixin):
         Returns the data read.
         """
         if pos is None: pos = self.file.tell()
-        if rel: pos += self.rlt.dataStart
+        if rel: pos += self.rlt.sections[1]['curOffset'] # XXX
         #self._logRead(size, pos, count, rel)
         return self.file.read(pos=pos, fmt=size, count=count)
 

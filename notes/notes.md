@@ -5,9 +5,6 @@ bee u0: (22464, 10104) (1370, 2112) (55092, 53581) (9476, 26471) (33738, 19565) 
 
 fox u0: (51, 104) (6, 234) (127, 213) (208, 132) (130, 60) (247, 21) (51, 104) (127, 213) (6, 234) (208, 132) (130, 60) (247, 21) (51, 104) (6, 234) (127, 213) (208, 132)
 
-Link:     5557 vtxs,  7104 faces,   7104 tris
-Renamon:  5493 vtxs,  8357 faces,  10524 tris
-
     |Vtxs|Faces|Tris|Bones|Texs
 ----|----|-----|----|-----|----
 Link|5557| 7104|7104|  115|  35
@@ -21,3 +18,18 @@ so the actual process would be:
 - rename bones, vtx groups, textures to match original model
 - replace bones, vertices, textures in the file
     - attributes p0, u0, i0?
+
+poach, pod are things on the belt
+Pod_A is shield attach?
+each bone has a corresponding group
+actually the rigs might be too different,
+may need to re-rig the new model manually...
+
+as for exporting to bfres, we can probably do that, but there are many unknown parameters we would need to generate:
+- shader params
+- render params
+- material params
+- relocation table
+- all unknown fields
+without generating most of these correctly, games probably won't accept the file.
+we can cheat a bit and use the properties from a previously imported file.

@@ -63,21 +63,7 @@ class DumpMixin:
 
 
     def _dumpRLT(self, res):
-        res.append("  RelTab│N/A │%08X│N/A     |data=0x%06X unk04=%X %X %X  %X %X %X %X  %X %X %X %X" % (
-            self.header['rlt_offset'],
-            self.rlt.dataStart,
-            self.rlt.header['unk04'],
-            self.rlt.header['unk08'],
-            self.rlt.header['unk0C'],
-            self.rlt.header['unk10'],
-            self.rlt.header['unk14'],
-            self.rlt.header['unk18'],
-            self.rlt.header['unk1C'],
-            self.rlt.header['unk20'],
-            self.rlt.header['unk24'],
-            self.rlt.header['unk28'],
-            self.rlt.header['unk2C'],
-        ))
+        res.append(self.rlt.dump())
 
 
     def _dumpModels(self, res):
