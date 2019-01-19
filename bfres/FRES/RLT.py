@@ -7,7 +7,7 @@ from bfres.BinaryFile import BinaryFile
 from .FresObject import FresObject
 
 # https://wiki.oatmealdome.me/BFRES_(File_Format)#Relocation_Table
-# BFRES always has 5 sections:
+# BFRES always has 5 sections (some may be unused):
 # 0. Pointers up to the end of the string pool.
 # 1. Pointers for index buffer.
 # 2. Pointers for vertex buffer.
@@ -64,7 +64,7 @@ class RLT(FresObject):
 
         res.append("  \x1B[4mSection│BaseOffs│CurOffs │Size    │EntryIdx│EntryCnt\x1B[0m")
         for i, section in enumerate(self.sections):
-            res.append("  %7d│%08X│%08X│%08X│%08X|%08X" % (
+            res.append("  %7d│%08X│%08X│%08X│%8d|%4d" % (
                 i, section['base'], section['curOffset'],
                 section['size'], section['idx'], section['count']))
 
