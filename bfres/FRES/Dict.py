@@ -10,7 +10,7 @@ from .FresObject import FresObject
 class Header(BinaryStruct):
     """Dict header."""
     fields = (
-        ('I',  'unk00'), # always 0? total data size?
+        ('I',  'unk00'), # "magic, always blank in FRES"
         ('I',  'num_items'), # excluding root
     )
     size = 8
@@ -19,10 +19,10 @@ class Header(BinaryStruct):
 class Node(BinaryStruct):
     """A node in a Dict."""
     fields = (
-        ('I', 'search_value'),
-        ('H', 'left_idx'),
-        ('H', 'right_idx'),
-        String('name'),
+        ('I',    'search_value'),
+        ('H',    'left_idx'),
+        ('H',    'right_idx'),
+        String(  'name'),
         Offset32('data_offset'),
     )
     size = 16
