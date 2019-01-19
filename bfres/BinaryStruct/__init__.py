@@ -80,6 +80,10 @@ class BinaryStruct:
         res = {}
         for field in self.orderedFields:
             try:
+                # read the field
+                #log.debug("Read %s.%s from 0x%X => 0x%X",
+                #    type(self).__name__, field['name'],
+                #    field['offset'], offset)
                 file.seek(offset)
                 func = field['read']
                 data = func(file)
@@ -94,7 +98,9 @@ class BinaryStruct:
                 log.error("Failed reading field '%s' from offset 0x%X: %s",
                     field['name'], offset, ex)
 
+        log.debug("Read %s: %s", type(self).__name__, res)
         self._checkMagic(res)
+        self._checkOffsets(res, file)
         self._checkPadding(res)
         return res
 
@@ -117,13 +123,32 @@ class BinaryStruct:
                 type(self).__name__, str(magic), str(valid)))
 
 
+    def _checkOffsets(self, res, file):
+        """Check if offsets are sane."""
+        from .Offset import Offset
+        for field in self.orderedFields:
+            typ  = field['type']
+            name = field['name']
+            if isinstance(typ, Offset):
+                try:
+                    val = int(res.get(name, None))
+                    if val < 0 or val > file.size:
+                        # don't warn on == file.size because some files
+                        # have an offset field that's their own size
+                        log.warning("%s: Offset '%s' = 0x%X but EOF = 0x%X",
+                            type(self).__name__, name, val, file.size+1)
+                except (TypeError, ValueError):
+                    # string offsets are Offset but not numbers
+                    pass
+
+
     def _checkPadding(self, res):
         """Check if padding values are as expected."""
         from .Padding import Padding
         for field in self.orderedFields:
             typ  = field['type']
             name = field['name']
-            data = res[name]
+            data = res.get(name, None)
             if isinstance(typ, Padding):
                 expected = typ.value
                 for i, byte in enumerate(data):
