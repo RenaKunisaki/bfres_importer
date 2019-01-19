@@ -1,6 +1,7 @@
 import logging; log = logging.getLogger(__name__)
 from bfres.BinaryStruct import BinaryStruct, BinaryObject
 from bfres.BinaryStruct.StringOffset import StringOffset
+from bfres.BinaryStruct.Padding import Padding
 from bfres.BinaryStruct.Switch import Offset32, Offset64, String
 from bfres.BinaryFile import BinaryFile
 from .RLT import RLT
@@ -23,22 +24,21 @@ class SwitchHeader(BinaryStruct):
         ('8s', 'magic'),
         ('<2H','version'),
         ('H',  'byte_order'), # FFFE=litle, FEFF=big
-        ('H',  'header_len'), # always 0x0C
+        #('H',  'header_len'), # always 0x0C
+        ('B', 'alignment'),
+        ('B', 'addr_size'), # target address size, usually 0
 
         String('name', lenprefix=None), # null-terminated filename
-        Offset32('alignment'),
-        # alignment might be U16, which would make it 0xD0,
-        # which is the same size as this header.
+        ('H', 'flags'),
+        ('H', 'block_offset'),
 
         Offset32('rlt_offset'), # relocation table
         Offset32('file_size'), # size of this file
 
-        String('name2'), # length-prefixed filename
+        String('name2', fmt='Q'), # length-prefixed filename
         # name and name2 seem to always both be the filename
         # without extension, and in fact name points to the actual
         # string following the length prefix that name2 points to.
-
-        Offset32('unk24'),
 
         Offset64('fmdl_offset'),
         Offset64('fmdl_dict_offset'),
@@ -64,7 +64,7 @@ class SwitchHeader(BinaryStruct):
         Offset64('embed_offset'),
         Offset64('embed_dict_offset'),
 
-        Offset64('unkA8'),
+        Padding(8),
         Offset64('str_tab_offset'),
         Offset32('str_tab_size'),
 
@@ -75,9 +75,7 @@ class SwitchHeader(BinaryStruct):
         ('H',    'fshu_cnt'),
         ('H',    'fscn_cnt'),
         ('H',    'embed_cnt'),
-        ('H',    'unkCA'),
-        ('H',    'unkCC'),
-        ('H',    'unkCE'),
+        Padding(6),
     )
     size = 0xD0
 

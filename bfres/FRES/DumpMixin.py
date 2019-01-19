@@ -18,7 +18,7 @@ class DumpMixin:
 
 
     def _dumpHeader(self, res):
-        res.append('  FRES "%s"/"%s": Version: %d,%d, Size: 0x%06X, Endian: %s, Align: 0x%08X' % (
+        res.append('  FRES "%s"/"%s": Version:%d,%d, Size:0x%06X, Endian:%s, Align:0x%X, AddrSize:0x%X, Flags:0x%X, BlockOffs:0x%04X' % (
             self.name,
             self.header['name2'],
             self.header['version'][0],
@@ -26,12 +26,9 @@ class DumpMixin:
             self.header['file_size'],
             self.byteOrder,
             self.header['alignment'],
-        ))
-        res.append("  Unk24: 0x%08X UnkCA: 0x%04X 0x%04X 0x%04X" % (
-            self.header['unk24'],
-            self.header['unkCA'],
-            self.header['unkCC'],
-            self.header['unkCE'],
+            self.header['addr_size'],
+            self.header['flags'],
+            self.header['block_offset'],
         ))
 
 
