@@ -55,7 +55,7 @@ class SkeletonImporter:
             if bone.parent:
                 boneObj.parent = boneObjs[bone.parent_idx]
                 boneObj.head   = boneObj.parent.tail
-                boneObj.use_connect = False
+                boneObj.use_connect = True
             else:
                 boneObj.head = (0,0,0)
 
