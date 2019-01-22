@@ -23,7 +23,8 @@ bl_info = {
 print("BFRES MAIN")
 if "bpy" in locals():
     import importlib
-    names = ('BinaryStruct', 'FRES', 'FMDL', 'Importer', 'YAZ0')
+    names = ('BinaryStruct', 'FRES', 'FMDL', 'Importer', 'Exporter',
+    'YAZ0')
     for name in names:
         ls = locals()
         if name in ls:
@@ -41,8 +42,9 @@ log = bfres.logger.logging.getLogger()
 
 # import our modules
 import bpy
-from bfres import Importer, YAZ0, FRES, BinaryStruct
+from bfres import Importer, Exporter, YAZ0, FRES, BinaryStruct
 from bfres.Importer import ImportOperator
+from bfres.Exporter import ExportOperator
 from bfres.Importer.Preferences import BfresPreferences
 from bfres.BinaryFile import BinaryFile
 import tempfile
@@ -54,6 +56,8 @@ def register():
     bpy.utils.register_module('bfres')
     bpy.types.INFO_MT_file_import.append(
         ImportOperator.menu_func_import)
+    bpy.types.INFO_MT_file_export.append(
+        ExportOperator.menu_func_export)
 
 
 def unregister():
@@ -61,6 +65,8 @@ def unregister():
     bpy.utils.unregister_module('bfres')
     bpy.types.INFO_MT_file_import.remove(
         ImportOperator.menu_func_import)
+    bpy.types.INFO_MT_file_export.remove(
+        ExportOperator.menu_func_export)
 
 
 # define main function, for running script outside of Blender.

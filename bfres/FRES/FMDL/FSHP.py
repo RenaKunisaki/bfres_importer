@@ -81,6 +81,7 @@ class FSHP(FresObject):
         res.append("FmatIdx: 0x%04X" % self.header['fmat_idx'])
         res.append("SingleBind: 0x%04X" % self.header['single_bind'])
         res.append("LODs: %3d" % len(self.lods))
+        res.append("Name: '%s'" % self.name)
         res = ', '.join(res)
         #return '\n'.join(res).replace('\n', '\n      ')
         return res

@@ -88,6 +88,7 @@ class ImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
 
     @staticmethod
     def menu_func_import(self, context):
+        """Handle the Import menu item."""
         self.layout.operator(
             ImportOperator.bl_idname,
             text="Nintendo Switch BFRES (.bfres/.szs)")

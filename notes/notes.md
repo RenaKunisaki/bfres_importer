@@ -1,3 +1,8 @@
+Spm texture channels:
+red:   specular
+green: metal
+blue:  unused
+
 For bones: maybe "Smooth Mtx Idx" is really "group ID", to correspond with the vertex groups. So instead of adding 2, we use the bone that has the matching group ID.
 Maybe "smooth matrix" is just someone's way of describing the whole vertex group/weight thing, and they don't really refer to a matrix?
 
@@ -24,6 +29,9 @@ Pod_A is shield attach?
 each bone has a corresponding group
 actually the rigs might be too different,
 may need to re-rig the new model manually...
+or make a script which compares bones in each rig to find those closest, renaming one to match the other
+    - if source model has multiple bones in close proximity and target just has one, it could merge them, averaging their weights
+for now I'm going with "manual" rigging (mostly Blender auto weights)
 
 as for exporting to bfres, we can probably do that, but there are many unknown parameters we would need to generate:
 - shader params
@@ -33,3 +41,48 @@ as for exporting to bfres, we can probably do that, but there are many unknown p
 - all unknown fields
 without generating most of these correctly, games probably won't accept the file.
 we can cheat a bit and use the properties from a previously imported file.
+
+if we want to just export a new model overtop of the existing one, all we really need to replace are the attributes (buffer data) and textures
+we can probably just tack the new data on to the end of the file and point them to it. worry about actually rebuilding the file and replacing the old data later, once it works.
+
+Attribute formats for Link:
+FVTX|p0     |n0   |t0   |b0   |c0   |u0     |u1    |i0   |w0   |FSHP
+----|-------|-----|-----|-----|-----|-------|------|-----|-----|------------------------
+   0|half[4]|10bit|u8[4]|u8[4]|none |half[2]|u16[2]|u8[4]|u8[4]|Belt_A_Buckle__Mt_Belt_A
+   1|half[4]|10bit|u8[4]|u8[4]|none |u16[2] |none  |u8[2]|u8[2]|Belt_C_Buckle__Mt_Belt_C
+   2|half[4]|10bit|u8[4]|u8[4]|none |u16[2] |none  |u8   |none |Earring__Mt_Earring
+   3|half[4]|10bit|u8[4]|u8[4]|none |half[2]|none  |u8   |none |Eye_L__Mt_Eyeball_L
+   4|half[4]|10bit|u8[4]|u8[4]|none |s16[2] |none  |u8   |none |Eye_R__Mt_Eyeball_R
+   5|half[4]|10bit|u8[4]|u8[4]|none |u16[2] |none  |u8[4]|u8[4]|Eyelashes__Mt_Eyelashes
+   6|half[4]|10bit|u8[4]|u8[4]|u8[4]|u16[2] |u16[2]|u8[4]|u8[4]|Face__Mt_Face
+   7|half[4]|10bit|u8[4]|u8[4]|u8[4]|u16[2] |u16[2]|u8[4]|u8[4]|Face__Mt_Head
+   8|half[4]|10bit|u8[4]|u8[4]|none |u16[2] |none  |u8[4]|u8[4]|Skin__Mt_Lower_Skin
+   9|half[4]|10bit|u8[4]|u8[4]|none |u16[2] |none  |u8[4]|u8[4]|Skin__Mt_Underwear
+  10|half[4]|10bit|u8[4]|u8[4]|none |u16[2] |none  |u8[4]|u8[4]|Skin__Mt_Upper_Skin
+
+Vtx attr names:
+b: binormal
+c: color
+i: index (vtx group)
+n: normal
+p: position
+t: tangent
+u: UV coord
+w: weight
+
+pointers are also in RLT section 2 which is empty?
+that can't be right, we use the RLT to find the buffers
+`if rel: pos += self.rlt.sections[1]['curOffset'] # XXX`
+section 1 curOffs=0x38000 size=0xA690 entryIdx=246 entryCnt=1
+entry 246: curOffs=0x0150 structs=1 offsets=1 padding=0
+not sure what that means, but I think the buffers are the only use of the RLT?
+so if we changed that pointer, it might be enough
+we could test by duplicating the data, changing the pointer to it, and testing
+maybe changing some of the texture coords to see a difference
+first we need to get the damn mods to load at all
+
+- open a bfres file
+- locate the buffer data
+- change the pointers to new data
+- scan the RLT for those old pointers
+- change those too
