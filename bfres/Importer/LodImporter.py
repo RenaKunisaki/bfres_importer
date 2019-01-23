@@ -47,6 +47,7 @@ class LodImporter:
         for i, submesh in enumerate(self.lod.submeshes):
             log.debug("Reading submesh %d...", i)
             idxs = submesh['idxs']
+            log.debug("Submesh idxs (%d): %s", len(idxs), idxs)
             for idx in range(max(idxs)+1):
                 for attr in self.fvtx.attrs:
                     fmt  = attr.format
@@ -79,6 +80,7 @@ class LodImporter:
         # the game doesn't tell how many vertices each LOD has,
         # but we can usually rely on this.
         nVtxs = int(self.lod.header['idx_cnt'] / 3)
+        log.debug("LOD has %d vtxs, %d idxs", nVtxs, len(idxs))
 
         # create a mesh and add faces to it
         mesh = bmesh.new()
@@ -109,13 +111,22 @@ class LodImporter:
             log.error("Unsupported prim format: %s", fmt)
             raise UnsupportedFormatError(
                 "Unsupported prim format: " + fmt)
-        return meth(idxs, mesh)
+        try:
+            return meth(idxs, mesh)
+        except (struct.error, IndexError):
+            raise MalformedFileError("LOD submesh faces are out of bounds")
 
     def _createFacesBasic(self, idxs, mesh, step, nVtxs):
         for i in range(0, len(idxs), step):
-            vs   = list(mesh.verts[j] for j in idxs[i:i+nVtxs])
-            face = mesh.faces.new(vs)
-            face.smooth = self.parent.operator.smooth_faces
+            try:
+                vs   = list(mesh.verts[j] for j in idxs[i:i+nVtxs])
+                #log.debug("face %d: %s", i, vs)
+                face = mesh.faces.new(vs)
+                face.smooth = self.parent.operator.smooth_faces
+            except IndexError:
+                log.error("LOD submesh face %d is out of bounds (max %d)",
+                    i, nVtxs)
+                raise
 
     def _createFaces_points(self, idxs, mesh):
         return self._createFacesBasic(idxs, mesh, 1, 1)
@@ -146,15 +157,20 @@ class LodImporter:
     def _addVerticesToMesh(self, mesh, vtxs):
         """Add vertices (from `_p0` attribute) to a `bmesh`."""
         for i in range(len(vtxs)):
-            if len(vtxs[i]) == 4:
-                x, y, z, w = vtxs[i]
-            else:
-                x, y, z = vtxs[i]
-                w = 1
-            if w != 1:
-                # Blender doesn't support the W coord,
-                # but it's never used anyway.
-                log.warn("FRES: FSHP vertex W is %f", w)
+            try:
+                if len(vtxs[i]) == 4:
+                    x, y, z, w = vtxs[i]
+                else:
+                    x, y, z = vtxs[i]
+                    w = 1
+                if w != 1:
+                    # Blender doesn't support the W coord,
+                    # but it's never used anyway.
+                    log.warn("FRES: FSHP vertex W is %f", w)
+            except IndexError:
+                log.error("LOD submesh vtx %d is out of bounds (max %d)",
+                    i, len(vtxs))
+                raise
             mesh.verts.new((x, -z, y))
         mesh.verts.ensure_lookup_table()
         mesh.verts.index_update()

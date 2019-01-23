@@ -139,7 +139,7 @@ class FVTX(FresObject):
         self.buffers = []
         file = self.fres.file
         for i in range(self.header['num_bufs']):
-            log.debug("Read buffer %d from 0x%X", i, dataOffs)
+            #log.debug("Read buffer %d from 0x%X", i, dataOffs)
             n      = i*0x10
             size   = self.fres.read('I', bufSize+n)
             stride = self.fres.read('I', strideSize+n)
@@ -173,9 +173,9 @@ class FVTX(FresObject):
                 buf  = self.buffers[attr.buf_idx]
                 offs = attr.buf_offs + (i * buf.stride)
                 fmt  = attr.format
-                log.debug("Read attr '%s' from buffer %d, offset 0x%X, stride 0x%X, fmt %s",
-                    attr.name, attr.buf_idx, attr.buf_offs,
-                    buf.stride, fmt['name'])
+                #log.debug("Read attr '%s' from buffer %d, offset 0x%X, stride 0x%X, fmt %s",
+                #    attr.name, attr.buf_idx, attr.buf_offs,
+                #    buf.stride, fmt['name'])
 
                 # get the conversion function if any
                 func = None

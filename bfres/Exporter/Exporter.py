@@ -64,7 +64,14 @@ class Exporter:
     def exportMesh(self, obj):
         """Export a mesh."""
         attrs = self._makeAttrBufferDataForMesh(obj)
-        self.outFile.write(bytes(repr(attrs), 'utf-8'))
+        faces = []
+        for poly in obj.data.polygons:
+            faces.append(list(poly.vertices))
+        data = {
+            'attrs': attrs,
+            'faces': faces,
+        }
+        self.outFile.write(bytes(repr(data), 'utf-8'))
 
 
     def _makeAttrBufferDataForMesh(self, obj):
