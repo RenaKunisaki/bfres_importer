@@ -23,7 +23,7 @@ class Header(BinaryStruct):
     magic  = b'_RLT'
     fields = (
         ('4s', 'magic'),
-        ('I',  'curOffset'), # offset of the RLT
+        ('I',  'curOffset'),   # offset of the RLT
         ('I',  'numSections'), # always 5
         Padding(4),
     )
@@ -36,7 +36,7 @@ class Section(BinaryStruct):
         Offset64('base'),
         Offset32('curOffset'),
         Offset32('size'),
-        Offset32('idx'), # entry index
+        Offset32('idx'),   # entry index
         Offset32('count'), # entry count
     )
     size = 0x18
