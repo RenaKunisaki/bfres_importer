@@ -108,10 +108,14 @@ class FVTX(FresObject):
         self.headerOffset = offset
         self.header = self.fres.read(Header(), offset)
 
-        self._readDicts()
-        self._readBuffers()
-        self._readAttrs()
-        self._readVtxs()
+        try:
+            self._readDicts()
+            self._readBuffers()
+            self._readAttrs()
+            self._readVtxs()
+        except struct.error:
+            log.exception("Error reading FVTX")
+            raise
         return self
 
 

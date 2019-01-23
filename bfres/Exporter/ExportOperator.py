@@ -13,7 +13,8 @@ class ExportOperator(bpy.types.Operator, bpy_extras.io_utils.ExportHelper):
     bl_idname    = "export_scene.nxbfres"
     bl_label     = "Export NX BFRES"
     bl_options   = {'UNDO'}
-    filename_ext = ".bfres"
+    #filename_ext = ".bfres"
+    filename_ext = ".dat"
 
     filter_glob  = bpy.props.StringProperty(
         default="*.sbfres;*.bfres",
@@ -46,7 +47,7 @@ class ExportOperator(bpy.types.Operator, bpy_extras.io_utils.ExportHelper):
             if os.path.exists(path):
                 log.info("Exporting linked file: %s", path)
                 exporter = Exporter(self, context)
-                exporter.run(path)
+                exporter.exportTextures(path)
         log.info("exporting: %s", self.properties.filepath)
         exporter = Exporter(self, context)
         return exporter.run(self.properties.filepath)

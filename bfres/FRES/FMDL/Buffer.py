@@ -14,6 +14,8 @@ class Buffer:
         self.size   = size
         self.stride = stride
         self.offset = offset
+        log.debug("Reading buffer (size 0x%X stride 0x%X) from 0x%X",
+            size, stride, offset)
         self.data   = file.read(size, offset)
         if len(self.data) < size:
             log.warning("Buffer size is 0x%X but only read 0x%X",
