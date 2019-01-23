@@ -11,3 +11,7 @@ class UnsupportedFileTypeError(Exception):
 
 class UnsupportedFormatError(Exception):
     """Some particular format used in this file is not supported."""
+
+
+class MalformedFileError(Exception):
+    """File is corrupted or unreadable."""

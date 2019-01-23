@@ -5,7 +5,7 @@ import bpy_extras
 import struct
 from .MaterialImporter import MaterialImporter
 from .SkeletonImporter import SkeletonImporter
-from bfres.Exceptions import UnsupportedFormatError
+from bfres.Exceptions import UnsupportedFormatError, MalformedFileError
 
 
 class LodImporter:
@@ -44,7 +44,8 @@ class LodImporter:
         for attr in self.fvtx.attrs:
             attrBuffers[attr.name] = []
 
-        for submesh in self.lod.submeshes:
+        for i, submesh in enumerate(self.lod.submeshes):
+            log.debug("Reading submesh %d...", i)
             idxs = submesh['idxs']
             for idx in range(max(idxs)+1):
                 for attr in self.fvtx.attrs:
@@ -54,7 +55,14 @@ class LodImporter:
                     buf  = self.fvtx.buffers[attr.buf_idx]
                     offs = attr.buf_offs + (idx * buf.stride)
                     data = buf.data[offs : offs + size]
-                    data = struct.unpack(fmt['fmt'], data)
+                    try:
+                        data = struct.unpack(fmt['fmt'], data)
+                    except struct.error:
+                        log.error("Submesh %d reading out of bounds for attribute '%s' (offs=0x%X len=0x%X fmt=%s)",
+                            i, attr.name, offs, len(buf.data),
+                            fmt['fmt'])
+                        raise MalformedFileError("Submesh %d reading out of bounds for attribute '%s'" % (
+                            i, attr.name))
                     if func: data = func(data)
                     attrBuffers[attr.name].append(data)
 

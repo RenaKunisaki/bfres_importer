@@ -4,6 +4,7 @@ from bfres.BinaryStruct.Padding import Padding
 from bfres.BinaryStruct.StringOffset import StringOffset
 from bfres.BinaryStruct.Switch import Offset32, Offset64, String
 from bfres.BinaryFile import BinaryFile
+from bfres.Exceptions import MalformedFileError
 
 
 class Buffer:
@@ -18,8 +19,9 @@ class Buffer:
             size, stride, offset)
         self.data   = file.read(size, offset)
         if len(self.data) < size:
-            log.warning("Buffer size is 0x%X but only read 0x%X",
+            log.error("Buffer size is 0x%X but only read 0x%X",
                 size, len(self.data))
+            raise MalformedFileError("Buffer data out of bounds")
 
         fmts = {
               'int8': 'b',

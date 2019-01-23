@@ -6,6 +6,7 @@ from bfres.BinaryStruct.Switch import Offset32, Offset64, String
 from bfres.BinaryFile import BinaryFile
 from bfres.FRES.FresObject import FresObject
 from bfres.FRES.Dict import Dict
+from bfres.Exceptions import MalformedFileError
 from .Attribute import Attribute, AttrStruct
 from .Buffer import Buffer
 from .Vertex import Vertex
@@ -132,10 +133,13 @@ class FVTX(FresObject):
             self.fres.rlt.sections[1]['curOffset']
         bufSize    = self.header['vtx_bufsize_offs']
         strideSize = self.header['vtx_stridesize_offs']
+        log.debug("FVTX offsets: dataOffs=0x%X bufSize=0x%X strideSize=0x%X",
+            dataOffs, bufSize, strideSize)
 
         self.buffers = []
         file = self.fres.file
         for i in range(self.header['num_bufs']):
+            log.debug("Read buffer %d from 0x%X", i, dataOffs)
             n      = i*0x10
             size   = self.fres.read('I', bufSize+n)
             stride = self.fres.read('I', strideSize+n)
@@ -162,9 +166,16 @@ class FVTX(FresObject):
         for i in range(self.header['num_vtxs']):
             vtx = Vertex()
             for attr in self.attrs: # get the data for each attribute
+                if attr.buf_idx >= len(self.buffers) or attr.buf_idx < 0:
+                    log.error("Attribute '%s' uses buffer %d, but max index is %d",
+                        attr.name, attr.buf_idx, len(self.buffers)-1)
+                    raise MalformedFileError("Invalid buffer index for attribute "+attr.name)
                 buf  = self.buffers[attr.buf_idx]
                 offs = attr.buf_offs + (i * buf.stride)
                 fmt  = attr.format
+                log.debug("Read attr '%s' from buffer %d, offset 0x%X, stride 0x%X, fmt %s",
+                    attr.name, attr.buf_idx, attr.buf_offs,
+                    buf.stride, fmt['name'])
 
                 # get the conversion function if any
                 func = None
@@ -173,7 +184,14 @@ class FVTX(FresObject):
                     fmt  = fmt['fmt']
 
                 # get the data
-                data = struct.unpack_from(fmt, buf.data, offs)
+                try:
+                    data = struct.unpack_from(fmt, buf.data, offs)
+                except struct.error:
+                    log.error("Attribute '%s' reading out of bounds from buffer %d (vtx %d of %d = offset 0x%X fmt '%s', max = 0x%X)",
+                        attr.name, attr.buf_idx, i,
+                        self.header['num_vtxs'], offs, fmt,
+                        len(buf.data))
+                    raise MalformedFileError("Invalid buffer offset for attribute "+attr.name)
                 if func: data = func(data)
                 vtx.setAttr(attr, data)
 

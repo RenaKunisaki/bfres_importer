@@ -150,3 +150,5 @@ class LOD(FresObject):
                 'count':  cnt,
                 'idxs':   idxs,
             })
+            log.debug("FVTX submesh %d: offset=0x%06X count=0x%04X idxs=%s",
+                i, offs, cnt, idxs)
