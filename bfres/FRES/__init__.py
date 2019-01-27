@@ -21,61 +21,60 @@ class SwitchHeader(BinaryStruct):
     """Switch FRES header."""
     magic = b'FRES    ' # four spaces
     fields = (
-        ('8s', 'magic'),
-        ('<2H','version'),
-        ('H',  'byte_order'), # FFFE=litle, FEFF=big
-        #('H',  'header_len'), # always 0x0C
-        ('B', 'alignment'),
-        ('B', 'addr_size'), # target address size, usually 0
+        ('8s', 'magic'), # 0x00
+        ('<2H','version'), # 0x08
+        ('H',  'byte_order'), # 0x0C; FFFE=litle, FEFF=big
+        ('B', 'alignment'), # 0x0E
+        ('B', 'addr_size'), # 0x0F; target address size, usually 0
 
-        String('name', lenprefix=None), # null-terminated filename
-        ('H', 'flags'),
-        ('H', 'block_offset'),
+        String('name', lenprefix=None), #0x10;  null-terminated filename
+        ('H', 'flags'), # 0x14
+        ('H', 'block_offset'), # 0x16
 
-        Offset32('rlt_offset'), # relocation table
-        Offset32('file_size'), # size of this file
+        Offset32('rlt_offset'), # 0x18; relocation table
+        Offset32('file_size'),  # 0x1C; size of this file
 
-        String('name2', fmt='Q'), # length-prefixed filename
+        String('name2', fmt='Q'), # 0x20; length-prefixed filename
         # name and name2 seem to always both be the filename
         # without extension, and in fact name points to the actual
         # string following the length prefix that name2 points to.
 
-        Offset64('fmdl_offset'),
-        Offset64('fmdl_dict_offset'),
+        Offset64('fmdl_offset'), # 0x28
+        Offset64('fmdl_dict_offset'), # 0x30
 
-        Offset64('fska_offset'),
-        Offset64('fska_dict_offset'),
+        Offset64('fska_offset'), # 0x38
+        Offset64('fska_dict_offset'), # 0x40
 
-        Offset64('fmaa_offset'),
-        Offset64('fmaa_dict_offset'),
+        Offset64('fmaa_offset'), # 0x48
+        Offset64('fmaa_dict_offset'), # 0x50
 
-        Offset64('fvis_offset'),
-        Offset64('fvis_dict_offset'),
+        Offset64('fvis_offset'), # 0x58
+        Offset64('fvis_dict_offset'), # 0x60
 
-        Offset64('fshu_offset'),
-        Offset64('fshu_dict_offset'),
+        Offset64('fshu_offset'), # 0x68
+        Offset64('fshu_dict_offset'), # 0x70
 
-        Offset64('fscn_offset'),
-        Offset64('fscn_dict_offset'),
+        Offset64('fscn_offset'), # 0x78
+        Offset64('fscn_dict_offset'), # 0x80
 
-        Offset64('buf_mem_pool'),
-        Offset64('buf_mem_pool_info'), # is this a dict?
+        Offset64('buf_mem_pool'), # 0x88
+        Offset64('buf_mem_pool_info'), # 0x90 is this a dict?
 
-        Offset64('embed_offset'),
-        Offset64('embed_dict_offset'),
+        Offset64('embed_offset'), # 0x98
+        Offset64('embed_dict_offset'), # 0xA0
 
-        Padding(8),
-        Offset64('str_tab_offset'),
-        Offset32('str_tab_size'),
+        Padding(8), # 0xA8 might be an unused offset?
+        Offset64('str_tab_offset'), # 0xB0
+        Offset32('str_tab_size'),   # 0xB8
 
-        ('H',    'fmdl_cnt'),
-        ('H',    'fska_cnt'),
-        ('H',    'fmaa_cnt'),
-        ('H',    'fvis_cnt'),
-        ('H',    'fshu_cnt'),
-        ('H',    'fscn_cnt'),
-        ('H',    'embed_cnt'),
-        Padding(6),
+        ('H',    'fmdl_cnt'),  # 0xBC
+        ('H',    'fska_cnt'),  # 0xBE
+        ('H',    'fmaa_cnt'),  # 0xC0
+        ('H',    'fvis_cnt'),  # 0xC2
+        ('H',    'fshu_cnt'),  # 0xC4
+        ('H',    'fscn_cnt'),  # 0xC6
+        ('H',    'embed_cnt'), # 0xC8
+        Padding(6), # 0xCA
     )
     size = 0xD0
 
