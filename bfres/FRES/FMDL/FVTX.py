@@ -17,22 +17,22 @@ class Header(BinaryStruct):
     """FVTX header."""
     magic  = b'FVTX'
     fields = (
-        ('4s',   'magic'),
-        Padding(12),
-        Offset64('vtx_attrib_array_offs'),
-        Offset64('vtx_attrib_dict_offs'),
-        Offset64('mem_pool'),
-        Offset64('unk18'),
-        Offset64('unk20'),
-        Offset64('vtx_bufsize_offs'),
-        Offset64('vtx_stridesize_offs'),
-        Offset64('vtx_buf_array_offs'),
-        Offset32('vtx_buf_offs'),
-        ('B',  'num_attrs'),
-        ('B',  'num_bufs'),
-        ('H',  'index'), # Section index: index into FVTX array of this entry.
-        ('I',  'num_vtxs'),
-        ('I',  'skin_weight_influence'),
+        ('4s',   'magic'), # 0x00
+        Padding(12), # 0x04
+        Offset64('vtx_attrib_array_offs'), # 0x10
+        Offset64('vtx_attrib_dict_offs'), # 0x18
+        Offset64('mem_pool'), # 0x20
+        Offset64('unk28'), # 0x28
+        Offset64('unk30'), # 0x30
+        Offset64('vtx_bufsize_offs'), # 0x38
+        Offset64('vtx_stridesize_offs'), # 0x40
+        Offset64('vtx_buf_array_offs'), # 0x48
+        Offset32('vtx_buf_offs'), # 0x50
+        ('B',  'num_attrs'), # 0x54
+        ('B',  'num_bufs'), # 0x55
+        ('H',  'index'), # 0x56; Section index: index into FVTX array of this entry.
+        ('I',  'num_vtxs'), # 0x58
+        ('I',  'skin_weight_influence'), # 0x5C
     )
     size = 0x60
 
@@ -70,8 +70,8 @@ class FVTX(FresObject):
         res.append('  Mem Pool: 0x%08X' %
             self.header['mem_pool'],
         )
-        res.append('  Unk18: 0x%08X 0x%08X' % (
-            self.header['unk18'], self.header['unk20'],
+        res.append('  Unk28: 0x%08X 0x%08X' % (
+            self.header['unk28'], self.header['unk30'],
         ))
         res.append('  Attrib Array: 0x%06X, Dict:   0x%06X' % (
             self.header['vtx_attrib_array_offs'],
