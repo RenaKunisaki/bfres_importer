@@ -47,7 +47,7 @@ class LodImporter:
         for i, submesh in enumerate(self.lod.submeshes):
             log.debug("Reading submesh %d...", i)
             idxs = submesh['idxs']
-            log.debug("Submesh idxs (%d): %s", len(idxs), idxs)
+            #log.debug("Submesh idxs (%d): %s", len(idxs), idxs)
             for idx in range(max(idxs)+1):
                 for attr in self.fvtx.attrs:
                     fmt  = attr.format
@@ -128,30 +128,17 @@ class LodImporter:
                     i, nVtxs)
                 raise
 
-    def _createFaces_points(self, idxs, mesh):
+    def _createFaces_point_list(self, idxs, mesh):
         return self._createFacesBasic(idxs, mesh, 1, 1)
 
-    def _createFaces_lines(self, idxs, mesh):
+    def _createFaces_line_list(self, idxs, mesh):
         return self._createFacesBasic(idxs, mesh, 2, 2)
 
-    #def _createFaces_line_strip(self, idxs, mesh):
-    #    return self._createFacesBasic(idxs, mesh, 1, 2)
+    def _createFaces_line_strip(self, idxs, mesh):
+        return self._createFacesBasic(idxs, mesh, 1, 2)
 
-    #def _createFaces_line_loop(self, idxs, mesh):
-    #    return self._createFacesBasic(idxs, mesh, 1, 2)
-
-    def _createFaces_triangles(self, idxs, mesh):
+    def _createFaces_triangle_list(self, idxs, mesh):
         return self._createFacesBasic(idxs, mesh, 3, 3)
-
-    def _createFaces_triangle_strip(self, idxs, mesh):
-        return self._createFacesBasic(idxs, mesh, 1, 3)
-
-    def _createFaces_quads(self, idxs, mesh):
-        return self._createFacesBasic(idxs, mesh, 4, 4)
-
-    # XXX this seems wrong
-    _createFaces_line_strip = _createFaces_triangles
-    _createFaces_line_loop  = _createFaces_triangles
 
 
     def _addVerticesToMesh(self, mesh, vtxs):

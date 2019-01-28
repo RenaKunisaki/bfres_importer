@@ -41,38 +41,38 @@ class Header(BinaryStruct):
     """FMAT header."""
     magic  = b'FMAT'
     fields = (
-        ('4s',   'magic'),
-        ('I',    'size'),
-        ('I',    'size2'), Padding(4),
-        String  ('name'),  Padding(4),
-        Offset64('render_param_offs'),
-        Offset64('render_param_dict_offs'),
-        Offset64('shader_assign_offs'), # -> name offsets
-        Offset64('unk30_offs'),
-        Offset64('tex_ref_array_offs'),
-        Offset64('unk40_offs'),
-        Offset64('sampler_list_offs'),
-        Offset64('sampler_dict_offs'),
-        Offset64('shader_param_array_offs'),
-        Offset64('shader_param_dict_offs'),
-        Offset64('shader_param_data_offs'),
-        Offset64('user_data_offs'),
-        Offset64('user_data_dict_offs'),
-        Offset64('volatile_flag_offs'),
-        Offset64('user_offs'),
-        Offset64('sampler_slot_offs'),
-        Offset64('tex_slot_offs'),
-        ('I',    'mat_flags'),
-        ('H',    'section_idx'),
-        ('H',    'render_param_cnt'),
-        ('B',    'tex_ref_cnt'),
-        ('B',    'sampler_cnt'),
-        ('H',    'shader_param_cnt'),
-        ('H',    'shader_param_data_size'),
-        ('H',    'raw_param_data_size'),
-        ('H',    'user_data_cnt'),
-        ('H',    'unkB2'), # usually 0 or 1
-        ('I',    'unkB4'),
+        ('4s',   'magic'), # 0x00
+        ('I',    'size'),  # 0x04
+        ('I',    'size2'), Padding(4), # 0x08
+        String  ('name'),  Padding(4), # 0x10
+        Offset64('render_param_offs'), # 0x18
+        Offset64('render_param_dict_offs'), # 0x20
+        Offset64('shader_assign_offs'), # 0x28 -> name offsets
+        Offset64('unk30_offs'), # 0x30
+        Offset64('tex_ref_array_offs'), # 0x38
+        Offset64('unk40_offs'), # 0x40
+        Offset64('sampler_list_offs'), # 0x48
+        Offset64('sampler_dict_offs'), # 0x50
+        Offset64('shader_param_array_offs'), # 0x58
+        Offset64('shader_param_dict_offs'), # 0x60
+        Offset64('shader_param_data_offs'), # 0x68
+        Offset64('user_data_offs'), # 0x70
+        Offset64('user_data_dict_offs'), # 0x78
+        Offset64('volatile_flag_offs'), # 0x80
+        Offset64('user_offs'), # 0x88
+        Offset64('sampler_slot_offs'), # 0x90
+        Offset64('tex_slot_offs'), # 0x98
+        ('I',    'mat_flags'), # 0xA0
+        ('H',    'section_idx'), # 0xA4
+        ('H',    'render_param_cnt'), # 0xA6
+        ('B',    'tex_ref_cnt'), # 0xA8
+        ('B',    'sampler_cnt'), # 0xA9
+        ('H',    'shader_param_cnt'), # 0xAA
+        ('H',    'shader_param_data_size'), # 0xAC
+        ('H',    'raw_param_data_size'), # 0xAE
+        ('H',    'user_data_cnt'), # 0xB0
+        ('H',    'unkB2'), # 0xB2; usually 0 or 1
+        ('I',    'unkB4'), # 0xB4
     )
     size = 0xB8
 

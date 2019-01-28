@@ -16,16 +16,16 @@ class Header(BinaryStruct):
     """FSKL header."""
     magic  = b'FSKL'
     fields = (
-        ('4s', 'magic'),
-        ('I',  'size'),
-        ('I',  'size2'),
-        Padding(4),
-        Offset64('bone_idx_group_offs'),
-        Offset64('bone_array_offs'),
-        Offset64('smooth_idx_offs'),
-        Offset64('smooth_mtx_offs'),
-        Offset64('unk30'),
-        Flags('flags', {
+        ('4s', 'magic'), # 0x00
+        ('I',  'size'),  # 0x04
+        ('I',  'size2'), # 0x08
+        Padding(4),      # 0x0C
+        Offset64('bone_idx_group_offs'), # 0x10
+        Offset64('bone_array_offs'),     # 0x18
+        Offset64('smooth_idx_offs'),     # 0x20
+        Offset64('smooth_mtx_offs'),     # 0x28
+        Offset64('unk30'),               # 0x30
+        Flags('flags', {                 # 0x38
             #'SCALE_NONE': 0x00000000, # no scaling
             'SCALE_STD':  0x00000100, # standard scaling
             'SCALE_MAYA': 0x00000200, # Respects Maya's segment scale
@@ -35,11 +35,11 @@ class Header(BinaryStruct):
                 # of Softimage.
             'EULER': 0x00001000, # euler rotn, not quaternion
         }),
-        ('H',  'num_bones'),
-        ('H',  'num_smooth_idxs'),
-        ('H',  'num_rigid_idxs'),
-        ('H',  'num_extra'),
-        ('I',  'unk44'),
+        ('H',  'num_bones'),       # 0x3C
+        ('H',  'num_smooth_idxs'), # 0x3E
+        ('H',  'num_rigid_idxs'),  # 0x40
+        ('H',  'num_extra'),       # 0x42
+        ('I',  'unk44'),           # 0x44
     )
     size = 0x48
 

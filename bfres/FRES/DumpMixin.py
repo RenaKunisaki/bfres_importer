@@ -47,7 +47,7 @@ class DumpMixin:
     def _dumpBufMemPool(self, res):
         res.append("  Buffer│ ?? │%08X│%08X" % (
             self.header['buf_mem_pool'],
-            self.header['buf_mem_pool_info'],
+            self.header['buf_section_offset'],
         ))
 
 

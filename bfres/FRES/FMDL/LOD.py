@@ -10,27 +10,35 @@ import struct
 
 
 primTypes = {
+    # where did these come from?
     # id: (min, incr, name)
-    0x01: (1, 1, 'points'),
-    0x02: (2, 2, 'lines'),
-    0x03: (2, 1, 'line_strip'),
-    0x04: (3, 3, 'triangles'),
-    0x05: (3, 1, 'triangle_fan'),
-    0x06: (3, 1, 'triangle_strip'),
-    0x0A: (4, 4, 'lines_adjacency'),
-    0x0B: (4, 1, 'line_strip_adjacency'),
-    0x0C: (6, 1, 'triangles_adjacency'),
-    0x0D: (6, 6, 'triangle_strip_adjacency'),
-    0x11: (3, 3, 'rects'),
-    0x12: (2, 1, 'line_loop'),
-    0x13: (4, 4, 'quads'),
-    0x14: (4, 2, 'quad_strip'),
-    0x82: (2, 2, 'tesselate_lines'),
-    0x83: (2, 1, 'tesselate_line_strip'),
-    0x84: (3, 3, 'tesselate_triangles'),
-    0x86: (3, 1, 'tesselate_triangle_strip'),
-    0x93: (4, 4, 'tesselate_quads'),
-    0x94: (4, 2, 'tesselate_quad_strip'),
+    #0x01: (1, 1, 'points'),
+    #0x02: (2, 2, 'lines'),
+    #0x03: (2, 1, 'line_strip'),
+    #0x04: (3, 3, 'triangles'),
+    #0x05: (3, 1, 'triangle_fan'),
+    #0x06: (3, 1, 'triangle_strip'),
+    #0x0A: (4, 4, 'lines_adjacency'),
+    #0x0B: (4, 1, 'line_strip_adjacency'),
+    #0x0C: (6, 1, 'triangles_adjacency'),
+    #0x0D: (6, 6, 'triangle_strip_adjacency'),
+    #0x11: (3, 3, 'rects'),
+    #0x12: (2, 1, 'line_loop'),
+    #0x13: (4, 4, 'quads'),
+    #0x14: (4, 2, 'quad_strip'),
+    #0x82: (2, 2, 'tesselate_lines'),
+    #0x83: (2, 1, 'tesselate_line_strip'),
+    #0x84: (3, 3, 'tesselate_triangles'),
+    #0x86: (3, 1, 'tesselate_triangle_strip'),
+    #0x93: (4, 4, 'tesselate_quads'),
+    #0x94: (4, 2, 'tesselate_quad_strip'),
+
+    # according to Jasper...
+    # id: (min, incr, name)
+    0x00: (1, 1, 'point_list'),
+    0x01: (2, 2, 'line_list'),
+    0x02: (2, 1, 'line_strip'),
+    0x03: (3, 3, 'triangle_list'),
 }
 idxFormats = {
     0x00: '<I', # I/H are backward from gx2Enum.h???
@@ -44,17 +52,17 @@ idxFormats = {
 class Header(BinaryStruct):
     """LOD header."""
     fields = (
-        Offset64('submesh_array_offs'),
-        Offset64('unk08'),
-        Offset64('unk10'),
-        Offset64('idx_buf_offs'), # -> buffer size in bytes
-        ('I',    'face_offs'),    # offset into index buffer
-        ('I',    'prim_fmt'),     # how to draw the faces
-        ('I',    'idx_type'),     # data type of index buffer entries
-        ('I',    'idx_cnt'),      # total number of indices
-        ('H',    'visibility_group'),
-        ('H',    'submesh_cnt'),
-        ('I',    'unk34'),
+        Offset64('submesh_array_offs'), # 0x00
+        Offset64('unk08'), # 0x08
+        Offset64('unk10'), # 0x10
+        Offset64('idx_buf_offs'), # 0x18 -> buffer size in bytes
+        ('I',    'face_offs'),    # 0x20; offset into index buffer
+        ('I',    'prim_fmt'),     # 0x24; how to draw the faces
+        ('I',    'idx_type'),     # 0x28; data type of index buffer entries
+        ('I',    'idx_cnt'),      # 0x2C; total number of indices
+        ('H',    'visibility_group'), # 0x30
+        ('H',    'submesh_cnt'), # 0x32
+        ('I',    'unk34'),       # 0x34
     )
     size = 0x38
 
@@ -128,10 +136,10 @@ class LOD(FresObject):
 
     def _readIdxBuf(self):
         """Read the index buffer."""
+        base  = self.fres.bufferSection['buf_offs']
         self.idx_buf = self.fres.read(self.idx_fmt,
-            pos   = self.header['face_offs'],
-            count = self.header['idx_cnt'],
-            rel   = True)
+            pos   = self.header['face_offs'] + base,
+            count = self.header['idx_cnt'])
 
         for i in range(self.header['idx_cnt']):
             self.idx_buf[i] += self.header['visibility_group']
@@ -150,5 +158,5 @@ class LOD(FresObject):
                 'count':  cnt,
                 'idxs':   idxs,
             })
-            log.debug("FVTX submesh %d: offset=0x%06X count=0x%04X idxs=%s",
-                i, offs, cnt, idxs)
+            #log.debug("FVTX submesh %d: offset=0x%06X count=0x%04X idxs=%s",
+            #    i, offs, cnt, idxs)

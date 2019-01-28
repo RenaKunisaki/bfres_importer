@@ -86,3 +86,65 @@ first we need to get the damn mods to load at all
 - change the pointers to new data
 - scan the RLT for those old pointers
 - change those too
+
+original buffer layout:
+n|size|strd|contents   |types  
+0|0D50|0008|p0         |half[4]
+1|0D50|0008|w0 i0      |u8[4], u8[4]
+2|1AA0|0010|n0 t0 u0 u1|10bit, u8[4], half[2], u16[2]
+3|06A8|0004|b0         |u8[4]
+so it's mostly combined types of the same size
+not sure why two different buffers for p0 and w0/i0
+
+vtx_stridesize_offs =>
+    int32_t stride;
+    uint32_t divisor; //should be 0
+    uint32_t reserved1;
+    uint32_t reserved2;
+    
+Similarly, the pointer at FVTX + 0x38
+(currently marked as "vertex buffer size") is another 0x10-long struct
+which is composed of
+    uint32_t size;
+    uint32_t gpuAccessFlags; //should be 5
+    uint32_t reserved1;
+    uint32_t reserved2;
+
+field        | orig  | modif | data
+-------------|-------|-------|-----
+dataOffs     | 42690 | 71C10 | floats?
+bufSize      |  6450 | 71B80 | 0xD50, 0xD50, 0x1AA0, 0x6A8
+strideSize   |  6490 | 71B90 | 8, 8, 16, 4
+BS.size      | 39000 | 39000 | D000 D400 D700... looks like part of whatever is at 38000
+BS.offs      | 38000 | 38000 | 0000 0100 0200...
+vtx_buf_offs |  A690 | 39C10 | 0800 0000 1000 6200 167C 0300, last is \*"uking_enable_scene_color0_fog"
+data from    | 42690 | 71C10 |
+vtx_buf_offs == RLT.section[1].size
+0x38000 + 0x39000 = 0x71000
+
+RLT     |original|modified|note
+--------|--------|--------|-------- "end of string pool"
+0 base  |       0|       0|
+0 offset|       0|       0|
+0 size  |   37DAE|   37DAE| string pool ends here
+0 total |   37DAE|   37DAE|
+--------|--------|--------|-------- "index buffer"
+1 base  |       0|       0|
+1 offset|   38000|   38000| BufferSection.offset
+1 size  |    A690|    A690|
+1 total |   42690|   42690|
+--------|--------|--------|-------- "vertex buffer"
+2 base  |       0|       0|
+2 offset|   42690|   71C10| pointer to buffer data
+2 size  |   2E970|   2E970|
+2 total |   71000|   A0580|
+--------|--------|--------|-------- "memory pool"
+3 base  |       0|       0|
+3 offset|   71000|   71000| 0x38000 + 0x39000
+3 size  |     120|     120|
+3 total |   71120|   71120|
+--------|--------|--------|-------- "external files"
+4 base  |       0|       0|
+4 offset|   71200|   71200|
+4 size  |     100|     100|
+4 total |   71300|   71300|

@@ -13,6 +13,28 @@ from .Vertex import Vertex
 import struct
 
 
+class BufferStrideStruct(BinaryStruct):
+    """Vertex buffer stride info."""
+    fields = (
+        ('i', 'stride'),
+        ('I', 'divisor'), # should be 0
+        ('I', 'reserved1'),
+        ('I', 'reserved2'),
+    )
+    size = 0x10
+
+
+class BufferSizeStruct(BinaryStruct):
+    """Vertex buffer size info."""
+    fields = (
+        ('I', 'size'),
+        ('I', 'gpuAccessFlags'), # should be 5
+        ('I', 'reserved1'),
+        ('I', 'reserved2'),
+    )
+    size = 0x10
+
+
 class Header(BinaryStruct):
     """FVTX header."""
     magic  = b'FVTX'
@@ -24,15 +46,15 @@ class Header(BinaryStruct):
         Offset64('mem_pool'), # 0x20
         Offset64('unk28'), # 0x28
         Offset64('unk30'), # 0x30
-        Offset64('vtx_bufsize_offs'), # 0x38
-        Offset64('vtx_stridesize_offs'), # 0x40
+        Offset64('vtx_bufsize_offs'), # 0x38 => BufferSizeStruct
+        Offset64('vtx_stridesize_offs'), # 0x40 => BufferStrideStruct
         Offset64('vtx_buf_array_offs'), # 0x48
         Offset32('vtx_buf_offs'), # 0x50
-        ('B',  'num_attrs'), # 0x54
-        ('B',  'num_bufs'), # 0x55
-        ('H',  'index'), # 0x56; Section index: index into FVTX array of this entry.
-        ('I',  'num_vtxs'), # 0x58
-        ('I',  'skin_weight_influence'), # 0x5C
+        ('B',    'num_attrs'), # 0x54
+        ('B',    'num_bufs'), # 0x55
+        ('H',    'index'), # 0x56; Section index: index into FVTX array of this entry.
+        ('I',    'num_vtxs'), # 0x58
+        ('I',    'skin_weight_influence'), # 0x5C
     )
     size = 0x60
 
@@ -129,20 +151,34 @@ class FVTX(FresObject):
 
     def _readBuffers(self):
         """Read the attribute data buffers."""
+        #dataOffs = self.header['vtx_buf_offs'] + \
+        #    self.fres.rlt.sections[1]['curOffset']
         dataOffs = self.header['vtx_buf_offs'] + \
-            self.fres.rlt.sections[1]['curOffset']
+            self.fres.bufferSection['buf_offs']
         bufSize    = self.header['vtx_bufsize_offs']
         strideSize = self.header['vtx_stridesize_offs']
-        log.debug("FVTX offsets: dataOffs=0x%X bufSize=0x%X strideSize=0x%X",
-            dataOffs, bufSize, strideSize)
+        log.debug("FVTX offsets: dataOffs=0x%X bufSize=0x%X strideSize=0x%X bufferSection.size=0x%X, offs=0x%X, vtx_buf_offs=0x%X",
+            dataOffs, bufSize, strideSize,
+            self.fres.bufferSection['size'],
+            self.fres.bufferSection['buf_offs'],
+            self.header['vtx_buf_offs'])
 
         self.buffers = []
         file = self.fres.file
         for i in range(self.header['num_bufs']):
             #log.debug("Read buffer %d from 0x%X", i, dataOffs)
-            n      = i*0x10
-            size   = self.fres.read('I', bufSize+n)
-            stride = self.fres.read('I', strideSize+n)
+            n = i*0x10
+            sizeStruct = BufferSizeStruct().readFromFile(
+                self.fres, bufSize+n)
+            strideStruct = BufferStrideStruct().readFromFile(
+                self.fres, strideSize+n)
+            size   = sizeStruct['size']
+            stride = strideStruct['stride']
+            if strideStruct['divisor'] != 0:
+                log.warning("Buffer %d stride divisor is %d, expected 0", i, strideStruct['divisor'])
+
+            #size   = self.fres.read('I', bufSize+n)
+            #stride = self.fres.read('I', strideSize+n)
             buf    = Buffer(self.fres, size, stride, dataOffs)
             self.buffers.append(buf)
             dataOffs += buf.size

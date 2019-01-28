@@ -11,6 +11,7 @@ from bfres.Exceptions import \
 from .Dict import Dict
 from .EmbeddedFile import EmbeddedFile, Header as EmbeddedFileHeader
 from .FMDL import FMDL, Header as FMDLHeader
+from .BufferSection import BufferSection
 from .DumpMixin import DumpMixin
 import traceback
 import struct
@@ -21,11 +22,11 @@ class SwitchHeader(BinaryStruct):
     """Switch FRES header."""
     magic = b'FRES    ' # four spaces
     fields = (
-        ('8s', 'magic'), # 0x00
-        ('<2H','version'), # 0x08
+        ('8s', 'magic'),      # 0x00
+        ('<2H','version'),    # 0x08
         ('H',  'byte_order'), # 0x0C; FFFE=litle, FEFF=big
-        ('B', 'alignment'), # 0x0E
-        ('B', 'addr_size'), # 0x0F; target address size, usually 0
+        ('B',  'alignment'),  # 0x0E
+        ('B',  'addr_size'),  # 0x0F; target address size, usually 0
 
         String('name', lenprefix=None), #0x10;  null-terminated filename
         ('H', 'flags'), # 0x14
@@ -39,31 +40,31 @@ class SwitchHeader(BinaryStruct):
         # without extension, and in fact name points to the actual
         # string following the length prefix that name2 points to.
 
-        Offset64('fmdl_offset'), # 0x28
+        Offset64('fmdl_offset'),      # 0x28
         Offset64('fmdl_dict_offset'), # 0x30
 
-        Offset64('fska_offset'), # 0x38
+        Offset64('fska_offset'),      # 0x38
         Offset64('fska_dict_offset'), # 0x40
 
-        Offset64('fmaa_offset'), # 0x48
+        Offset64('fmaa_offset'),      # 0x48
         Offset64('fmaa_dict_offset'), # 0x50
 
-        Offset64('fvis_offset'), # 0x58
+        Offset64('fvis_offset'),      # 0x58
         Offset64('fvis_dict_offset'), # 0x60
 
-        Offset64('fshu_offset'), # 0x68
+        Offset64('fshu_offset'),      # 0x68
         Offset64('fshu_dict_offset'), # 0x70
 
-        Offset64('fscn_offset'), # 0x78
+        Offset64('fscn_offset'),      # 0x78
         Offset64('fscn_dict_offset'), # 0x80
 
-        Offset64('buf_mem_pool'), # 0x88
-        Offset64('buf_mem_pool_info'), # 0x90 is this a dict?
+        Offset64('buf_mem_pool'),       # 0x88
+        Offset64('buf_section_offset'), # 0x90; BufferSection offset
 
-        Offset64('embed_offset'), # 0x98
+        Offset64('embed_offset'),      # 0x98
         Offset64('embed_dict_offset'), # 0xA0
 
-        Padding(8), # 0xA8 might be an unused offset?
+        Padding(8), # 0xA8; might be an unused offset?
         Offset64('str_tab_offset'), # 0xB0
         Offset32('str_tab_size'),   # 0xB8
 
@@ -135,12 +136,14 @@ class FRES(DumpMixin):
         offs = self.header['str_tab_offset'] - StringTable.Header.size
         self.strtab = StringTable().readFromFile(self, offs)
 
+        self._readBufferSection()
+
         self.embeds = self._readObjects(
             EmbeddedFile, 'embed', EmbeddedFileHeader.size)
 
         self.models = self._readObjects(FMDL, 'fmdl',
             FMDLHeader.size)
-        # XXX fska, fmaa, fvis, fshu, fscn, buffer
+        # XXX fska, fmaa, fvis, fshu, fscn
 
 
     def _readObjects(self, typ, name, size):
@@ -160,6 +163,21 @@ class FRES(DumpMixin):
             objs.append(obj)
             offs += size
         return objs
+
+
+    def _readBufferSection(self):
+        """Read the BufferSection struct."""
+        if self.header['buf_section_offset'] != 0:
+            self.bufferSection = BufferSection().readFromFile(self.file,
+                self.header['buf_section_offset'])
+            log.debug("BufferSection at 0x%06X: unk=0x%X size=0x%X offs=0x%X",
+                self.header['buf_section_offset'],
+                self.bufferSection['unk00'],
+                self.bufferSection['size'],
+                self.bufferSection['buf_offs'])
+        else:
+            self.bufferSection = None
+            log.debug("No BufferSection in this FRES")
 
 
     def _logRead(self, size, pos, count, rel):
@@ -213,6 +231,8 @@ class FRES(DumpMixin):
 
         Returns the data read.
         """
+        if rel:
+            log.warning("Read using rel=True: %s", traceback.extract_stack())
         if pos is None: pos = self.file.tell()
         if rel: pos += self.rlt.sections[1]['curOffset'] # XXX
         #self._logRead(size, pos, count, rel)

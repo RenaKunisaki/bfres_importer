@@ -18,38 +18,38 @@ class Header(BinaryStruct):
     """FSHP header."""
     magic  = b'FSHP'
     fields = (
-        ('4s', 'magic'),
-        ('3I', 'unk04'),
-        String('name'), Padding(4),
+        ('4s', 'magic'), # 0x00
+        ('3I', 'unk04'), # 0x04
+        String('name'), Padding(4), # 0x10
 
-        Offset64('fvtx_offset'), # => FVTX
+        Offset64('fvtx_offset'), # 0x18 => FVTX
 
-        Offset64('lod_offset'), # => LOD models
-        Offset64('fskl_idx_array_offs'), # => 00030002 00050004 00070006 00090008  000B000A 000D000C 000F000E 00110010
+        Offset64('lod_offset'), # 0x20 => LOD models
+        Offset64('fskl_idx_array_offs'), # 0x28 => 00030002 00050004 00070006 00090008  000B000A 000D000C 000F000E 00110010
 
-        Offset64('unk30'), # 0
-        Offset64('unk38'), # 0
+        Offset64('unk30'), # 0x30; 0
+        Offset64('unk38'), # 0x38; 0
 
         # bounding box and bounding radius
-        Offset64('bbox_offset'), # => ~24 floats / 8 Vec3s / 6 Vec4s
-        Offset64('bradius_offset'), # => => 3F03ADA8 3EFC1658 00000000 00000D14  00000000 00000000 00000000 00000000
+        Offset64('bbox_offset'), # 0x40 => ~24 floats / 8 Vec3s / 6 Vec4s
+        Offset64('bradius_offset'), # 0x48 => => 3F03ADA8 3EFC1658 00000000 00000D14  00000000 00000000 00000000 00000000
             # as floats:
             # 3F03ADA8 = 0.5143685340881348
             # 3EFC1658 = 0.4923579692840576
 
-        Offset64('unk50'),
-        ('I',    'flags'),
-        ('H',    'index'),
-        ('H',    'fmat_idx'),
+        Offset64('unk50'), # 0x50
+        ('I',    'flags'), # 0x58
+        ('H',    'index'), # 0x5C
+        ('H',    'fmat_idx'), # 0x5E
 
-        ('H',    'single_bind'),
-        ('H',    'fvtx_idx'),
-        ('H',    'skin_bone_idx_cnt'),
-        ('B',    'vtx_skin_cnt'),
-        ('B',    'lod_cnt'),
-        ('I',    'vis_group_cnt'),
-        ('H',    'fskl_array_cnt'),
-        Padding(2),
+        ('H',    'single_bind'), # 0x60
+        ('H',    'fvtx_idx'), # 0x62
+        ('H',    'skin_bone_idx_cnt'), # 0x64
+        ('B',    'vtx_skin_cnt'), # 0x66
+        ('B',    'lod_cnt'), # 0x67
+        ('I',    'vis_group_cnt'), # 0x68
+        ('H',    'fskl_array_cnt'), # 0x6C
+        Padding(2), # 0x6E
     )
     size = 0x70
 
