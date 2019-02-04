@@ -11,6 +11,7 @@ from .Attribute import Attribute, AttrStruct
 from .Buffer import Buffer
 from .Vertex import Vertex
 import struct
+import math
 
 
 class BufferStrideStruct(BinaryStruct):
@@ -229,6 +230,15 @@ class FVTX(FresObject):
                         len(buf.data))
                     raise MalformedFileError("Invalid buffer offset for attribute "+attr.name)
                 if func: data = func(data)
+
+                # validate
+                d = data
+                if type(d) not in (list, tuple): d = [d]
+                for v in d:
+                    if math.isinf(v) or math.isnan(v):
+                        raise MalformedFileError("%s value in attribute %s" % (
+                            str(v), attr.name))
+
                 vtx.setAttr(attr, data)
 
             self.vtxs.append(vtx)
