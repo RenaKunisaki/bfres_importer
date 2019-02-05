@@ -18,7 +18,7 @@ def unpackArmHalfFloat(val):
     Uses ARM alternate format which does not encode Inf/NaN.
     """
     if type(val) in (list, tuple):
-        return list(map(unpacArmkHalfFloat, val))
+        return list(map(unpackArmHalfFloat, val))
     frac = (val & 0x3FF) / 0x3FF
     exp  = (val >> 10) & 0x1F
     sign = -1 if (val & 0x8000) else 1
