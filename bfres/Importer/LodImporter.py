@@ -44,9 +44,13 @@ class LodImporter:
         for attr in self.fvtx.attrs:
             attrBuffers[attr.name] = []
 
+        #log.debug("LOD submeshes: %s", self.lod.submeshes)
+
         for i, submesh in enumerate(self.lod.submeshes):
             log.debug("Reading submesh %d...", i)
             idxs = submesh['idxs']
+            if len(idxs) == 0:
+                raise MalformedFileError("Submesh %d is empty" % i)
             #log.debug("Submesh idxs (%d): %s", len(idxs), idxs)
             for idx in range(max(idxs)+1):
                 for attr in self.fvtx.attrs:
@@ -125,7 +129,7 @@ class LodImporter:
                 face.smooth = self.parent.operator.smooth_faces
             except IndexError:
                 log.error("LOD submesh face %d is out of bounds (max %d)",
-                    i, nVtxs)
+                    i, len(idxs))
                 raise
 
     def _createFaces_point_list(self, idxs, mesh):
@@ -153,7 +157,9 @@ class LodImporter:
                 if w != 1:
                     # Blender doesn't support the W coord,
                     # but it's never used anyway.
-                    log.warn("FRES: FSHP vertex W is %f", w)
+                    # XXX it can be used if the mesh uses quaternions
+                    # (or is it only skeletons that have that flag?)
+                    log.warn("FRES: FSHP vertex #%d W coord is %f, should be 1", i, w)
             except IndexError:
                 log.error("LOD submesh vtx %d is out of bounds (max %d)",
                     i, len(vtxs))
