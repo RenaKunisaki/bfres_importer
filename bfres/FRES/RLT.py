@@ -48,9 +48,14 @@ class Entry(BinaryStruct):
         Offset32('curOffset'),
         ('H',    'structCount'),
         ('B',    'offsetCount'),
-        ('B',    'paddingCount'),
+        ('B',    'stride'), # sometimes incorrectly called paddingCount
     )
     size = 0x08
+
+
+    #def readFromFile(self, file, offset):
+    #    data = super().readFromFile(file, offset)
+    #    for i in range(data['structCount']):
 
 
 class RLT(FresObject):
@@ -76,7 +81,7 @@ class RLT(FresObject):
         for i, entry in enumerate(self.entries):
             res.append("  %5d│%08X│%7d│%7d│%4d" % (
                 i, entry['curOffset'], entry['structCount'],
-                entry['offsetCount'], entry['paddingCount']))
+                entry['offsetCount'], entry['stride']))
 
         return '\n'.join(res).replace('\n', '\n  ')
 
