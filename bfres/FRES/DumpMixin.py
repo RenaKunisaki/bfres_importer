@@ -79,6 +79,14 @@ class DumpMixin:
         res.append("  Buffers: %d" % len(self.buffers))
         for i, buffer in enumerate(self.buffers):
             res.append(buffer.dump())
+        if self.bufferSection:
+            res.append("  Buffer section: unk00=0x%X offset=0x%X size=0x%X" % (
+                self.bufferSection['unk00'],
+                self.bufferSection['buf_offs'],
+                self.bufferSection['size'],
+            ))
+        else:
+            res.append("  Buffer section: none")
 
 
     def _dumpEmbeds(self, res):
