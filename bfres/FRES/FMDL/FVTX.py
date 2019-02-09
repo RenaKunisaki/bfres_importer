@@ -200,7 +200,7 @@ class FVTX(FresObject):
     def _readVtxs(self):
         """Read the vertices from the buffers."""
         self.vtxs = []
-        for i in range(self.header['num_vtxs']):
+        for iVtx in range(self.header['num_vtxs']):
             vtx = Vertex()
             for attr in self.attrs: # get the data for each attribute
                 if attr.buf_idx >= len(self.buffers) or attr.buf_idx < 0:
@@ -208,7 +208,7 @@ class FVTX(FresObject):
                         attr.name, attr.buf_idx, len(self.buffers)-1)
                     raise MalformedFileError("Invalid buffer index for attribute "+attr.name)
                 buf  = self.buffers[attr.buf_idx]
-                offs = attr.buf_offs + (i * buf.stride)
+                offs = attr.buf_offs + (iVtx * buf.stride)
                 fmt  = attr.format
                 #log.debug("Read attr '%s' from buffer %d, offset 0x%X, stride 0x%X, fmt %s",
                 #    attr.name, attr.buf_idx, attr.buf_offs,
@@ -225,7 +225,7 @@ class FVTX(FresObject):
                     data = struct.unpack_from(fmt, buf.data, offs)
                 except struct.error:
                     log.error("Attribute '%s' reading out of bounds from buffer %d (vtx %d of %d = offset 0x%X fmt '%s', max = 0x%X)",
-                        attr.name, attr.buf_idx, i,
+                        attr.name, attr.buf_idx, iVtx,
                         self.header['num_vtxs'], offs, fmt,
                         len(buf.data))
                     raise MalformedFileError("Invalid buffer offset for attribute "+attr.name)
@@ -236,8 +236,9 @@ class FVTX(FresObject):
                 if type(d) not in (list, tuple): d = [d]
                 for v in d:
                     if math.isinf(v) or math.isnan(v):
-                        log.warning("%s value in attribute %s",
-                            str(v), attr.name)
+                        log.warning("%s value in attribute %s vtx %d (offset 0x%X buffer %d base 0x%X)",
+                            str(v), attr.name, iVtx, offs,
+                            attr.buf_idx, attr.buf_offs)
 
                 vtx.setAttr(attr, data)
 
