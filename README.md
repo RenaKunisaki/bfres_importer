@@ -23,10 +23,15 @@ Very much in development and may be full of bugs and rough corners.
     - Progress indicator sucks, but I don't think Blender provides any way to do a better one
 - `Animal_Bee`'s UV map is all wrong
 - The addon preferences don't show up and I have no idea why
+- Some texture formats might not decode correctly
+- Extra files in the FRES, which are neither text nor a supported format, are discarded
+    - The game probably never does this, but it's technically possible
 
 # What's not even started yet:
 - Animations
 - Exporting
+    - Exports as a `.dat` file containing Python code, which might be useful for some scripts
+    - Eventually will export a `bfres` file
 - WiiU files
 
 # Why another importer?
