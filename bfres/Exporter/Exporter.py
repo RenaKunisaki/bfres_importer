@@ -108,8 +108,6 @@ class Exporter:
             attrs['_u%d' % i] = lst
             texCoords.append(lst)
 
-        isMultipleGroups = False
-
         # add each vertex to attribute buffers
         for vtx in obj.data.vertices:
             # groups: Weights for the vertex groups this vertex is member of
@@ -135,10 +133,6 @@ class Exporter:
             for uv in range(numUVs):
                 u, v = uvs[uv].data[vtx.index].uv
                 texCoords[uv].append((u, v))
-
-        if isMultipleGroups:
-            log.warning("Mesh has vertices in multiple groups")
-            # XXX use i1, i2...
 
         return attrs
 
