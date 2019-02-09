@@ -6,6 +6,7 @@ from bfres.BinaryStruct.Switch import Offset32, Offset64, String
 from bfres.BinaryFile import BinaryFile
 from bfres.FRES.FresObject import FresObject
 from bfres.FRES.Dict import Dict
+from bfres.Exceptions import MalformedFileError
 import struct
 
 
@@ -124,9 +125,18 @@ class LOD(FresObject):
 
         # decode primitive and index formats
         self.prim_fmt_id = self.header['prim_fmt']
-        self.prim_min, self.prim_size, self.prim_fmt = \
-            primTypes[self.header['prim_fmt']]
-        self.idx_fmt = idxFormats[self.header['idx_type']]
+        try:
+            self.prim_min, self.prim_size, self.prim_fmt = \
+                primTypes[self.header['prim_fmt']]
+        except KeyError:
+            raise MalformedFileError("Unknown primitive format 0x%X" %
+                self.header['prim_fmt'])
+
+        try:
+            self.idx_fmt = idxFormats[self.header['idx_type']]
+        except KeyError:
+            raise MalformedFileError("Unknown index type 0x%X" %
+                self.header['idx_type'])
 
         self._readIdxBuf()
         self._readSubmeshes()
